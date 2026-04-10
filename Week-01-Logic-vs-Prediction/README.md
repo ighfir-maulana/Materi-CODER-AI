@@ -234,7 +234,7 @@ Atau di bidang militer, sebagai alat untuk perlindungan atau serangan negara.
 ![Robotic](../Assets/ai-science-at-scale-header.jpg)
 ---
 
-## 4. Implementasi Neuron: Jantung dari Segalanya
+## 5. Implementasi Neuron: Jantung dari Segalanya
 
 Kita akan membangun **Perceptron** (Neuron Buatan paling sederhana). Mahasiswa akan koding langsung di sini.
 
