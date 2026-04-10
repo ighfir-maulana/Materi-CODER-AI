@@ -1,4 +1,5 @@
 # Week 1: Mengubah Cara Berpikir (Logika vs. Prediksi)
+wkjkdjds
 
 ## 🧐 Kenalan dulu yuk!
 Bayangin kamu lagi ngajarin seorang **adik kecil** cara membedakan antara kucing dan anjing. Kamu tidak mengajarinya rumus matematika yang rumit, kan? Kamu pasti akan menunjukkan banyak foto kucing dan anjing sambil bilang, "Nah, yang ini kucing, yang itu anjing."
