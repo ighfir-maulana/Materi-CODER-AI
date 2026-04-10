@@ -113,7 +113,7 @@ if bau == "tidak berbau": print("ini kucing")
 Liat kodingannya kan? bahkan itu saja ga cukup sebagai pembeda antara anjing dan kucing. kemampuan kita terbatas untuk mendefenisikan setiap aturan yang ada dan terlalu abstrak. 
 - **Artificial Intelligence:** Kita punya $Data + Hasil = Aturan$. Kita memberikan ribuan contoh, dan komputerlah yang bertugas menemukan "pola" atau "fungsi" matematisnya.
 
-![Cara Kerja AI](../Assets/carakerjaAI.jpg)
+![Cara Kerja AI](../Assets/CaraKerjaAI.jpg)
 
 Contoh sederhana untuk algoritma CNN
 ![Cara Kerja AI](../Assets/architecture-cnn-en.jpeg)
