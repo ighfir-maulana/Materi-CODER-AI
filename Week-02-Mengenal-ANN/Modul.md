@@ -163,10 +163,12 @@ Feed Forward adalah proses perhitungan matematika yang dlakukan ANN untuk mempre
 Tugas nya untuk menerima inputan, inputanya bisa berupa angka atau gambar. 
 
 - Data Angka (Prediski Harga HP)
+
 ![Cara Kerja AI](./Assets/11.png)
 
 
 - Data Gambar (Prediksi Anjing)
+
 ![Cara Kerja AI](./Assets/12.png)
 
 #### 2. _Hidden Layer_
