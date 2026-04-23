@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Signal Flow Master — ANN Simulator</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap');
+
+    :root {
+      --bg: #F5F5F7;
+      --bg2: #FFFFFF;
+      --panel: #FFFFFF;
+      --border: #E5E5EA;
+      --cyan: #007AFF;
+      --cyan-dim: rgba(0, 122, 255, 0.1);
+      --green: #34C759;
+      --green-dim: rgba(52, 199, 89, 0.1);
+      --red: #FF3B30;
+      --red-dim: rgba(255, 59, 48, 0.1);
+      --yellow: #FF9500;
+      --yellow-dim: rgba(255, 149, 0, 0.1);
+      --orange: #FF9500;
+      --text: #86868B;
+      --text-bright: #1D1D1F;
+      --inactive: #D1D1D6;
+      --inactive-node: #F2F2F7;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text-bright);
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* SCAN LINE OVERLAY */
+    body::before { display: none; }
+
+    header {
+      text-align: center;
+      padding: 16px 12px 8px;
+      border-bottom: 1px solid var(--border);
+      background: #FFFFFF;
+      position: relative;
+    }
+
+    
+    .logo {
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(18px, 4vw, 24px);
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: var(--text-bright);
+    }
+    
+
+    .subtitle {
+      font-size: clamp(9px, 2vw, 11px);
+      color: var(--text);
+      letter-spacing: 0.25em;
+      margin-top: 3px;
+      text-transform: uppercase;
+    }
+
+    .telkom-badge {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 9px;
+      color: var(--text);
+      letter-spacing: 0.1em;
+      border: 1px solid var(--border);
+      padding: 4px 8px;
+      border-radius: 3px;
+    }
+
+    /* MAIN LAYOUT */
+    .main-container {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      padding: 10px;
+      gap: 10px;
+      max-width: 1100px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* CHALLENGE PANEL */
+    .challenge-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 14px;
+    }
+
+    .challenge-label {
+      font-size: 10px;
+      color: var(--text);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-right: 4px;
+      white-space: nowrap;
+    }
+
+    .challenge-cards {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      flex: 1;
+    }
+
+    .challenge-card {
+      cursor: pointer;
+      padding: 6px 12px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: var(--bg2);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: var(--text);
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .challenge-card:hover {
+      border-color: var(--cyan);
+      color: var(--cyan);
+    }
+
+    .challenge-card.active {
+      border-color: var(--cyan);
+      background: rgba(0, 245, 255, 0.08);
+      color: var(--cyan);
+    }
+
+    .score-display {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .score-label {
+      font-size: 9px;
+      color: var(--text);
+      letter-spacing: 0.2em;
+    }
+
+    .score-val {
+      font-family: 'Inter', sans-serif;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--yellow);
+    }
+
+    /* GAME AREA */
+    .game-wrapper {
+      display: flex;
+      gap: 10px;
+      flex: 1;
+      min-height: 0;
+    }
+
+    /* NETWORK CANVAS AREA */
+    .network-panel {
+      flex: 1;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      position: relative;
+      overflow: hidden;
+      min-height: 380px;
+    }
+
+    .network-panel canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Layer labels */
+    .layer-labels {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      pointer-events: none;
+    }
+
+    .layer-label {
+      flex: 1;
+      text-align: center;
+      padding: 8px 4px;
+      font-size: 9px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--text);
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* SIDE PANEL */
+    .side-panel {
+      width: 200px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 640px) {
+      .game-wrapper {
+        flex-direction: column;
+      }
+
+      .side-panel {
+        width: 100%;
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+    }
+
+    /* INPUT CONTROLS */
+    .control-box {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px;
+    }
+
+    .box-title {
+      font-size: 9px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--text);
+      margin-bottom: 8px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .input-btn {
+      width: 100%;
+      padding: 10px 8px;
+      border-radius: 6px;
+      border: 1px solid var(--inactive);
+      background: var(--inactive-node);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: all 0.15s;
+      margin-bottom: 6px;
+      position: relative;
+      overflow: hidden;
+      text-align: left;
+    }
+
+    .input-btn::before {
+      content: '◯';
+      margin-right: 8px;
+      font-size: 13px;
+    }
+
+    .input-btn.active {
+      border-color: var(--cyan);
+      background: rgba(0, 245, 255, 0.12);
+      color: var(--cyan);
+      box-shadow: 0 4px 12px rgba(0, 122, 255, 0.15);
+    }
+
+    .input-btn.active::before {
+      content: '◉';
+      color: var(--cyan);
+    }
+
+    /* WEIGHT CONTROLS */
+    .weight-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .weight-item {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .weight-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .weight-name {
+      font-size: 9px;
+      color: var(--text);
+      letter-spacing: 0.05em;
+    }
+
+    .weight-val {
+      font-size: 10px;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      min-width: 32px;
+      text-align: right;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 4px;
+      border-radius: 2px;
+      outline: none;
+      cursor: pointer;
+      background: var(--inactive);
+      transition: background 0.2s;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--cyan);
+      cursor: pointer;
+      box-shadow: 0 0 6px var(--cyan);
+      transition: box-shadow 0.2s;
+    }
+
+    input[type="range"]:hover::-webkit-slider-thumb {
+      box-shadow: 0 0 12px var(--cyan);
+    }
+
+    /* OUTPUT STATUS */
+    .output-status {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .output-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      transition: all 0.3s;
+    }
+
+    .output-item.active-good {
+      border-color: var(--green);
+      background: rgba(0, 255, 136, 0.08);
+      box-shadow: 0 4px 12px rgba(52, 199, 89, 0.15);
+    }
+
+    .output-item.active-bad {
+      border-color: var(--red);
+      background: rgba(255, 51, 102, 0.08);
+      box-shadow: 0 4px 12px rgba(255, 59, 48, 0.15);
+    }
+
+    .output-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 1px solid var(--inactive);
+      transition: all 0.3s;
+      flex-shrink: 0;
+    }
+
+    .active-good .output-dot {
+      border-color: var(--green);
+      background: var(--green);
+      box-shadow: 0 2px 8px rgba(52, 199, 89, 0.3);
+    }
+
+    .active-bad .output-dot {
+      border-color: var(--red);
+      background: var(--red);
+      box-shadow: 0 2px 8px rgba(255, 59, 48, 0.3);
+    }
+
+    .output-text {
+      font-size: 11px;
+      flex: 1;
+    }
+
+    .active-good .output-text {
+      color: var(--green);
+    }
+
+    .active-bad .output-text {
+      color: var(--red);
+    }
+
+    .output-emoji {
+      font-size: 16px;
+    }
+
+    /* FEEDBACK PANEL */
+    .feedback-panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px;
+      min-height: 60px;
+      position: relative;
+    }
+
+    .feedback-inner {
+      font-size: 11px;
+      line-height: 1.5;
+      color: var(--text);
+    }
+
+    .feedback-inner.success {
+      color: var(--green);
+    }
+
+    .feedback-inner.fail {
+      color: var(--red);
+    }
+
+    .feedback-inner.hint {
+      color: var(--yellow);
+    }
+
+    /* RESET BTN */
+    .btn-reset {
+      padding: 9px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.2s;
+      text-transform: uppercase;
+    }
+
+    .btn-reset:hover {
+      border-color: var(--orange);
+      color: var(--orange);
+    }
+
+    /* PULSE ANIMATION */
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.5;
+      }
+    }
+
+    @keyframes successFlash {
+      0% {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 0.7;
+        transform: scale(1.03);
+      }
+
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .success-flash {
+      animation: successFlash 0.4s ease;
+    }
+
+    /* THRESHOLD INDICATOR */
+    .threshold-info {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 8px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      margin-bottom: 6px;
+    }
+
+    .threshold-bar-wrap {
+      flex: 1;
+      height: 4px;
+      background: var(--inactive);
+      border-radius: 2px;
+      position: relative;
+    }
+
+    .threshold-mark {
+      position: absolute;
+      top: -3px;
+      width: 2px;
+      height: 10px;
+      background: var(--yellow);
+      border-radius: 1px;
+    }
+
+    .threshold-fill {
+      height: 100%;
+      border-radius: 2px;
+      transition: width 0.3s, background 0.3s;
+    }
+
+    /* NODE VALUE TOOLTIP */
+    .node-tooltip {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid var(--cyan);
+      color: var(--cyan);
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      pointer-events: none;
+      z-index: 100;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="logo">SIGNAL FLOW MASTER</div>
+    <div class="subtitle">Artificial Neural Network · Interactive Simulator</div>
+    <div class="telkom-badge">TELKOM UNIVERSITY</div>
+  </header>
+
+  <div class="main-container">
+
+    <!-- CHALLENGE BAR -->
+    <div class="challenge-bar">
+      <span class="challenge-label">MISI:</span>
+      <div class="challenge-cards" id="challengeCards"></div>
+      <div class="score-display">
+        <span class="score-label">SCORE</span>
+        <span class="score-val" id="scoreVal">0</span>
+      </div>
+    </div>
+
+    <!-- GAME AREA -->
+    <div class="game-wrapper">
+
+      <!-- NETWORK CANVAS -->
+      <div class="network-panel" id="networkPanel">
+        <div class="layer-labels">
+          <div class="layer-label">⬡ INPUT</div>
+          <div class="layer-label">⬡ HIDDEN</div>
+          <div class="layer-label">⬡ OUTPUT</div>
+        </div>
+        <canvas id="networkCanvas"></canvas>
+        <div class="node-tooltip" id="nodeTooltip"></div>
+      </div>
+
+      <!-- SIDE PANEL -->
+      <div class="side-panel">
+
+        <!-- INPUT CONTROLS -->
+        <div class="control-box">
+          <div class="box-title">⬡ INPUT SENSORS</div>
+          <button class="input-btn" id="btnI0" onclick="toggleInput(0)">SENSOR KIRI</button>
+          <button class="input-btn" id="btnI1" onclick="toggleInput(1)">SENSOR KANAN</button>
+          <button class="input-btn" id="btnI2" onclick="toggleInput(2)">SENSOR DEPAN</button>
+        </div>
+
+        <!-- WEIGHTS -->
+        <div class="control-box" id="weightBox">
+          <div class="box-title">⬡ BOBOT KONEKSI</div>
+          <div class="weight-list" id="weightList"></div>
+        </div>
+
+        <!-- OUTPUT STATUS -->
+        <div class="control-box">
+          <div class="box-title">⬡ OUTPUT</div>
+          <div class="output-status" id="outputStatus"></div>
+        </div>
+
+        <!-- FEEDBACK -->
+        <div class="feedback-panel">
+          <div class="box-title">⬡ SISTEM</div>
+          <div class="feedback-inner" id="feedbackText">Aktifkan sensor, lalu atur bobot koneksi...</div>
+        </div>
+
+        <!-- RESET -->
+        <button class="btn-reset" onclick="resetWeights()">↺ RESET BOBOT</button>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ═══════════════════════════════════════════════════════════
+    //  NETWORK ARCHITECTURE
+    // ═══════════════════════════════════════════════════════════
+
+    const NUM_INPUT = 3;
+    const NUM_HIDDEN = 3;
+    const NUM_OUTPUT = 2;
+    const THRESHOLD = 0.5;
+
+    // State
+    let inputs = [0, 0, 0];   // 0 or 1
+    let wIH = [];           // weights input→hidden [i][h]
+    let wHO = [];           // weights hidden→output [h][o]
+    let hiddenAct = [0, 0, 0];      // 0..1 activations
+    let outputAct = [0, 0];
+    let hiddenSum = [0, 0, 0];
+    let outputSum = [0, 0];
+
+    let score = 0;
+    let activeChallengeIdx = 0;
+
+    // Challenge definitions
+    // target: given inputs[], which outputs should be ON?
+    const CHALLENGES = [
+      {
+        name: "OR Gate",
+        emoji: "🔵",
+        desc: "Sensor KIRI atau KANAN menyala → Output JALAN nyala",
+        targetFn: (inp) => ({ 0: inp[0] || inp[1], 1: 0 }),
+        hint: "Pastikan bobot dari sensor kiri & kanan cukup besar ke hidden layer"
+      },
+      {
+        name: "AND Gate",
+        emoji: "🟢",
+        desc: "KIRI DAN KANAN aktif → Output JALAN nyala",
+        targetFn: (inp) => ({ 0: inp[0] && inp[1], 1: 0 }),
+        hint: "Butuh dua sinyal kuat sekaligus. Satu sinyal saja tidak cukup!"
+      },
+      {
+        name: "Obstacle!",
+        emoji: "🔴",
+        desc: "SENSOR DEPAN aktif → Output TABRAK nyala, bukan JALAN",
+        targetFn: (inp) => ({ 0: 0, 1: inp[2] }),
+        hint: "Routing sinyal depan hanya ke output TABRAK, redam ke JALAN"
+      },
+      {
+        name: "Safe Path",
+        emoji: "🟡",
+        desc: "KIRI aktif (tanpa depan) → JALAN. DEPAN aktif → TABRAK",
+        targetFn: (inp) => ({
+          0: inp[0] && !inp[2] ? 1 : 0,
+          1: inp[2] ? 1 : 0
+        }),
+        hint: "Ini yang paling kompleks — gabungkan penghambatan & penguatan!"
+      }
+    ];
+
+    const OUTPUT_LABELS = [
+      { text: "JALAN ▶", emoji: "🚗", goodIdx: 0 },
+      { text: "TABRAK ✖", emoji: "⚠️", goodIdx: 1 }
+    ];
+
+    const INPUT_LABELS = ["KIRI", "KANAN", "DEPAN"];
+
+    // ═══════════════════════════════════════════════════════════
+    //  WEIGHT INIT
+    // ═══════════════════════════════════════════════════════════
+
+    function initWeights() {
+      wIH = Array.from({ length: NUM_INPUT }, () => Array(NUM_HIDDEN).fill(0.5));
+      wHO = Array.from({ length: NUM_HIDDEN }, () => Array(NUM_OUTPUT).fill(0.5));
+    }
+
+    function resetWeights() {
+      initWeights();
+      renderWeightSliders();
+      compute();
+      setFeedback("Bobot direset ke 0.5. Mulai eksplorasi lagi!", "hint");
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    //  FEEDFORWARD COMPUTE
+    // ═══════════════════════════════════════════════════════════
+
+    function sigmoid(x) {
+      return 1 / (1 + Math.exp(-x));
+    }
+
+    function compute() {
+      // Hidden layer
+      for (let h = 0; h < NUM_HIDDEN; h++) {
+        let sum = 0;
+        for (let i = 0; i < NUM_INPUT; i++) {
+          sum += inputs[i] * wIH[i][h];
+        }
+        hiddenSum[h] = sum;
+        hiddenAct[h] = sum >= THRESHOLD ? 1 : 0;
+      }
+      // Output layer
+      for (let o = 0; o < NUM_OUTPUT; o++) {
+        let sum = 0;
+        for (let h = 0; h < NUM_HIDDEN; h++) {
+          sum += hiddenAct[h] * wHO[h][o];
+        }
+        outputSum[o] = sum;
+        outputAct[o] = sum >= THRESHOLD ? 1 : 0;
+      }
+      updateOutputUI();
+      checkChallenge();
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    //  UI UPDATES
+    // ═══════════════════════════════════════════════════════════
+
+    function toggleInput(idx) {
+      inputs[idx] = inputs[idx] ? 0 : 1;
+      document.getElementById(`btnI${idx}`).classList.toggle('active', inputs[idx] === 1);
+      fireSignalAnimation();
+      compute();
+    }
+
+    function updateOutputUI() {
+      const container = document.getElementById('outputStatus');
+      container.innerHTML = '';
+      for (let o = 0; o < NUM_OUTPUT; o++) {
+        const lbl = OUTPUT_LABELS[o];
+        const isActive = outputAct[o] === 1;
+        const isGood = o === 0; // jalan is "good" by default
+        const div = document.createElement('div');
+        div.className = 'output-item' + (isActive ? (isGood ? ' active-good' : ' active-bad') : '');
+        div.innerHTML = `
+      <div class="output-dot"></div>
+      <span class="output-text">${lbl.text}</span>
+      <span class="output-emoji">${isActive ? lbl.emoji : ''}</span>
+    `;
+        container.appendChild(div);
+      }
+    }
+
+    function setFeedback(msg, type = '') {
+      const el = document.getElementById('feedbackText');
+      el.textContent = msg;
+      el.className = 'feedback-inner ' + type;
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    //  CHALLENGE SYSTEM
+    // ═══════════════════════════════════════════════════════════
+
+    function loadChallenge(idx) {
+      activeChallengeIdx = idx;
+      inputs = [0, 0, 0];
+      for (let i = 0; i < NUM_INPUT; i++) {
+        document.getElementById(`btnI${i}`).classList.remove('active');
+      }
+      // Update challenge card UI
+      document.querySelectorAll('.challenge-card').forEach((c, i) => {
+        c.classList.toggle('active', i === idx);
+      });
+      const ch = CHALLENGES[idx];
+      setFeedback(`MISI: ${ch.desc}`, 'hint');
+      compute();
+    }
+
+    function checkChallenge() {
+      const anyInput = inputs.some(v => v > 0);
+      if (!anyInput) return;
+
+      const ch = CHALLENGES[activeChallengeIdx];
+      const expected = ch.targetFn(inputs);
+      let correct = true;
+
+      for (let o = 0; o < NUM_OUTPUT; o++) {
+        const exp = expected[o] ? 1 : 0;
+        if (outputAct[o] !== exp) { correct = false; break; }
+      }
+
+      if (correct) {
+        score += 10;
+        document.getElementById('scoreVal').textContent = score;
+        setFeedback('✓ SINYAL BENAR! Kamu mengerti cara kerja ANN!', 'success');
+        document.getElementById('networkPanel').classList.add('success-flash');
+        setTimeout(() => document.getElementById('networkPanel').classList.remove('success-flash'), 400);
+      } else {
+        setFeedback('✗ Sinyal salah. Coba geser bobot... ' + ch.hint, 'fail');
+      }
+    }
+
+    function renderChallengeCards() {
+      const cont = document.getElementById('challengeCards');
+      cont.innerHTML = '';
+      CHALLENGES.forEach((ch, i) => {
+        const card = document.createElement('div');
+        card.className = 'challenge-card' + (i === 0 ? ' active' : '');
+        card.textContent = ch.emoji + ' ' + ch.name;
+        card.onclick = () => loadChallenge(i);
+        cont.appendChild(card);
+      });
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    //  WEIGHT SLIDERS
+    // ═══════════════════════════════════════════════════════════
+
+    const WEIGHT_DEFS = [
+      ...Array.from({ length: NUM_INPUT }, (_, i) =>
+        Array.from({ length: NUM_HIDDEN }, (_, h) => ({
+          label: `${INPUT_LABELS[i]}→H${h + 1}`,
+          type: 'IH', i, h,
+          getVal: () => wIH[i][h],
+          setVal: v => { wIH[i][h] = v; }
+        }))
+      ).flat(),
+      ...Array.from({ length: NUM_HIDDEN }, (_, h) =>
+        Array.from({ length: NUM_OUTPUT }, (_, o) => ({
+          label: `H${h + 1}→${OUTPUT_LABELS[o].text.split(' ')[0]}`,
+          type: 'HO', h, o,
+          getVal: () => wHO[h][o],
+          setVal: v => { wHO[h][o] = v; }
+        }))
+      ).flat()
+    ];
+
+    function getWeightColor(val) {
+      if (val > 0.7) return '#34C759';
+      if (val > 0.4) return '#FF9500';
+      return '#FF3B30';
+    }
+
+    function renderWeightSliders() {
+      const container = document.getElementById('weightList');
+      container.innerHTML = '';
+      WEIGHT_DEFS.forEach((wd, idx) => {
+        const val = wd.getVal();
+        const color = getWeightColor(val);
+        const item = document.createElement('div');
+        item.className = 'weight-item';
+        item.innerHTML = `
+      <div class="weight-header">
+        <span class="weight-name">${wd.label}</span>
+        <span class="weight-val" style="color:${color}" id="wval_${idx}">${val.toFixed(1)}</span>
+      </div>
+      <input type="range" min="0" max="1" step="0.05" value="${val}" id="wslider_${idx}"
+        style="background: linear-gradient(to right, ${color} ${val * 100}%, var(--inactive) ${val * 100}%)"
+        oninput="onWeightChange(${idx}, this.value)">
+    `;
+        container.appendChild(item);
+      });
+    }
+
+    function onWeightChange(idx, val) {
+      val = parseFloat(val);
+      WEIGHT_DEFS[idx].setVal(val);
+      const color = getWeightColor(val);
+      const valEl = document.getElementById(`wval_${idx}`);
+      const sliderEl = document.getElementById(`wslider_${idx}`);
+      if (valEl) { valEl.textContent = val.toFixed(1); valEl.style.color = color; }
+      if (sliderEl) {
+        sliderEl.style.background = `linear-gradient(to right, ${color} ${val * 100}%, var(--inactive) ${val * 100}%)`;
+      }
+      compute();
+      drawNetwork();
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    //  CANVAS DRAWING
+    // ═══════════════════════════════════════════════════════════
+
+    const canvas = document.getElementById('networkCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let particles = [];
+    let animFrame;
+
+    function resizeCanvas() {
+      const panel = document.getElementById('networkPanel');
+      canvas.width = panel.clientWidth;
+      canvas.height = panel.clientHeight;
+      drawNetwork();
+    }
+
+    function getNodePositions() {
+      const W = canvas.width, H = canvas.height;
+      const padTop = 36, padBot = 20;
+      const layerX = [W * 0.18, W * 0.5, W * 0.82];
+      const usableH = H - padTop - padBot;
+
+      const inputY = Array.from({ length: NUM_INPUT }, (_, i) => padTop + usableH * (i + 1) / (NUM_INPUT + 1));
+      const hiddenY = Array.from({ length: NUM_HIDDEN }, (_, i) => padTop + usableH * (i + 1) / (NUM_HIDDEN + 1));
+      const outputY = Array.from({ length: NUM_OUTPUT }, (_, i) => padTop + usableH * (i + 1) / (NUM_OUTPUT + 1));
+
+      return {
+        input: inputY.map(y => ({ x: layerX[0], y })),
+        hidden: hiddenY.map(y => ({ x: layerX[1], y })),
+        output: outputY.map(y => ({ x: layerX[2], y }))
+      };
+    }
+
+    function drawNetwork() {
+      const W = canvas.width, H = canvas.height;
+      ctx.clearRect(0, 0, W, H);
+
+      // Background grid
+      ctx.strokeStyle = 'rgba(0,0,0,0.05)';
+      ctx.lineWidth = 0.5;
+      for (let x = 0; x < W; x += 40) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+      }
+      for (let y = 0; y < H; y += 40) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+      }
+
+      const pos = getNodePositions();
+      const R = Math.min(canvas.width, canvas.height) * 0.045;
+      const nodeR = Math.max(14, Math.min(R, 26));
+
+      // === DRAW CONNECTIONS ===
+      // Input → Hidden
+      for (let i = 0; i < NUM_INPUT; i++) {
+        for (let h = 0; h < NUM_HIDDEN; h++) {
+          const w = wIH[i][h];
+          const active = inputs[i] > 0;
+          drawConnection(
+            pos.input[i], pos.hidden[h],
+            w, active && hiddenAct[h] > 0,
+            active
+          );
+        }
+      }
+      // Hidden → Output
+      for (let h = 0; h < NUM_HIDDEN; h++) {
+        for (let o = 0; o < NUM_OUTPUT; o++) {
+          const w = wHO[h][o];
+          const active = hiddenAct[h] > 0;
+          drawConnection(
+            pos.hidden[h], pos.output[o],
+            w, active && outputAct[o] > 0,
+            active
+          );
+        }
+      }
+
+      // === DRAW NODES ===
+      // Input nodes
+      for (let i = 0; i < NUM_INPUT; i++) {
+        drawNode(pos.input[i], nodeR, inputs[i] > 0, 'INPUT', INPUT_LABELS[i],
+          inputs[i] > 0 ? 1 : 0, 1);
+      }
+      // Hidden nodes
+      for (let h = 0; h < NUM_HIDDEN; h++) {
+        const filled = Math.min(hiddenSum[h] / (THRESHOLD * 2), 1);
+        drawNode(pos.hidden[h], nodeR, hiddenAct[h] > 0, 'HIDDEN', `H${h + 1}`,
+          filled, THRESHOLD / (THRESHOLD * 2));
+      }
+      // Output nodes
+      const outputColors = ['#34C759', '#FF3B30'];
+      for (let o = 0; o < NUM_OUTPUT; o++) {
+        const filled = Math.min(outputSum[o] / (THRESHOLD * 2), 1);
+        drawNode(pos.output[o], nodeR, outputAct[o] > 0, 'OUTPUT',
+          o === 0 ? 'JALAN' : 'TABRAK',
+          filled, THRESHOLD / (THRESHOLD * 2), outputColors[o]);
+      }
+
+      // === DRAW PARTICLES ===
+      drawParticles();
+    }
+
+    function drawConnection(from, to, weight, fullActive, partialActive) {
+      const alpha = 0.15 + weight * 0.6;
+      const thickness = 0.5 + weight * 3.5;
+
+      let r, g, b;
+      if (weight > 0.7) { r = 52; g = 199; b = 89; }
+      else if (weight > 0.4) { r = 255; g = 149; b = 0; }
+      else { r = 255; g = 59; b = 48; }
+
+      const activeAlpha = fullActive ? 0.9 : (partialActive ? alpha * 1.5 : alpha * 0.5);
+
+      ctx.save();
+      if (fullActive) {
+        ctx.shadowColor = `rgb(${r},${g},${b})`;
+        ctx.shadowBlur = 8 * weight;
+      }
+      ctx.beginPath();
+      ctx.moveTo(from.x, from.y);
+      ctx.lineTo(to.x, to.y);
+      ctx.strokeStyle = `rgba(${r},${g},${b},${activeAlpha})`;
+      ctx.lineWidth = thickness;
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawNode(pos, r, active, type, label, fillRatio, threshRatio, colorOverride) {
+      const cx = pos.x, cy = pos.y;
+
+      // Glow
+      if (active) {
+        const color = colorOverride || (type === 'INPUT' ? '#007AFF' : '#007AFF');
+        const grd = ctx.createRadialGradient(cx, cy, 0, cx, cy, r * 2.5);
+        grd.addColorStop(0, color + '44');
+        grd.addColorStop(1, 'transparent');
+        ctx.beginPath();
+        ctx.arc(cx, cy, r * 2.5, 0, Math.PI * 2);
+        ctx.fillStyle = grd;
+        ctx.fill();
+      }
+
+      // Outer ring
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      const ringColor = active
+        ? (colorOverride || '#007AFF')
+        : '#E5E5EA';
+      ctx.strokeStyle = ringColor;
+      ctx.lineWidth = active ? 2.5 : 1.5;
+      if (active) { ctx.shadowColor = ringColor; ctx.shadowBlur = 10; }
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+
+      // Fill ratio arc (shows "charge")
+      if (type !== 'INPUT') {
+        const startAngle = -Math.PI / 2;
+        const endAngle = startAngle + (fillRatio * Math.PI * 2);
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.arc(cx, cy, r - 3, startAngle, endAngle);
+        ctx.closePath();
+        let fillColor = colorOverride || '#007AFF';
+        if (!colorOverride) {
+          if (fillRatio > threshRatio) fillColor = '#34C759';
+          else fillColor = '#E5E5EA';
+        }
+        ctx.fillStyle = fillColor + (active ? 'CC' : '55');
+        ctx.fill();
+
+        // Threshold line
+        const tx = cx + (r - 3) * Math.cos(startAngle + threshRatio * Math.PI * 2);
+        const ty = cy + (r - 3) * Math.sin(startAngle + threshRatio * Math.PI * 2);
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(tx, ty);
+        ctx.strokeStyle = 'rgba(255, 149, 0, 0.6)';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      } else {
+        // Input: simple fill
+        ctx.beginPath();
+        ctx.arc(cx, cy, r - 4, 0, Math.PI * 2);
+        ctx.fillStyle = active ? (colorOverride || '#007AFF') + 'BB' : '#F2F2F7';
+        ctx.fill();
+      }
+
+      // Label
+      ctx.font = `bold ${Math.max(8, r * 0.45)}px 'Inter', sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = active ? '#FFFFFF' : '#86868B';
+      ctx.fillText(label, cx, cy);
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    //  PARTICLE SYSTEM (Signal Flow Animation)
+    // ═══════════════════════════════════════════════════════════
+
+    function fireSignalAnimation() {
+      particles = [];
+      const pos = getNodePositions();
+      // Only fire if any input active
+      for (let i = 0; i < NUM_INPUT; i++) {
+        if (!inputs[i]) continue;
+        for (let h = 0; h < NUM_HIDDEN; h++) {
+          const w = wIH[i][h];
+          spawnParticles(pos.input[i], pos.hidden[h], w, '#007AFF', 100);
+        }
+      }
+    }
+
+    function spawnParticles(from, to, weight, color, delay) {
+      const count = Math.max(1, Math.round(weight * 5));
+      for (let k = 0; k < count; k++) {
+        particles.push({
+          x: from.x, y: from.y,
+          tx: to.x, ty: to.y,
+          progress: 0,
+          speed: 0.008 + Math.random() * 0.006,
+          color,
+          size: 2 + weight * 3,
+          delay: delay + k * 60,
+          timer: 0,
+          done: false,
+          phase: 'IH'
+        });
+      }
+    }
+
+    function updateAndSpawnPhase2() {
+      const pos = getNodePositions();
+      // spawn hidden → output particles
+      for (let h = 0; h < NUM_HIDDEN; h++) {
+        if (!hiddenAct[h]) continue;
+        for (let o = 0; o < NUM_OUTPUT; o++) {
+          const w = wHO[h][o];
+          const count = Math.max(1, Math.round(w * 4));
+          for (let k = 0; k < count; k++) {
+            particles.push({
+              x: pos.hidden[h].x, y: pos.hidden[h].y,
+              tx: pos.output[o].x, ty: pos.output[o].y,
+              progress: 0,
+              speed: 0.009 + Math.random() * 0.007,
+              color: w > 0.7 ? '#34C759' : w > 0.4 ? '#FF9500' : '#FF3B30',
+              size: 2 + w * 3,
+              delay: k * 40,
+              timer: 0,
+              done: false,
+              phase: 'HO'
+            });
+          }
+        }
+      }
+    }
+
+    let phase2Spawned = false;
+
+    function drawParticles() {
+      const now = Date.now();
+      let allIHDone = true;
+
+      particles.forEach(p => {
+        p.timer += 16;
+        if (p.timer < p.delay) return;
+        if (p.done) return;
+        if (p.phase === 'IH') allIHDone = false;
+
+        p.progress += p.speed;
+        if (p.progress >= 1) {
+          p.progress = 1;
+          p.done = true;
+          return;
+        }
+
+        // Bezier-like midpoint
+        const mx = (p.x + p.tx) / 2 + (Math.random() - 0.5) * 8;
+        const my = (p.y + p.ty) / 2 + (Math.random() - 0.5) * 8;
+        const t = p.progress;
+        const px = (1 - t) * (1 - t) * p.x + 2 * (1 - t) * t * mx + t * t * p.tx;
+        const py = (1 - t) * (1 - t) * p.y + 2 * (1 - t) * t * my + t * t * p.ty;
+
+        const alpha = Math.sin(p.progress * Math.PI);
+        ctx.save();
+        ctx.globalAlpha = alpha;
+        ctx.shadowColor = p.color;
+        ctx.shadowBlur = 8;
+        ctx.beginPath();
+        ctx.arc(px, py, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+        ctx.restore();
+      });
+
+      // Trigger phase 2 once all IH particles landed
+      const ihParticles = particles.filter(p => p.phase === 'IH');
+      if (ihParticles.length > 0 && ihParticles.every(p => p.done) && !phase2Spawned) {
+        phase2Spawned = true;
+        compute();
+        updateAndSpawnPhase2();
+      }
+
+      const allDone = particles.every(p => p.done);
+      if (!allDone) {
+        requestAnimationFrame(() => { drawNetwork(); });
+      }
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    //  INIT & EVENTS
+    // ═══════════════════════════════════════════════════════════
+
+    function init() {
+      initWeights();
+      renderChallengeCards();
+      renderWeightSliders();
+      resizeCanvas();
+      compute();
+
+      // Re-fire animation when weights change (already done in onWeightChange)
+      // Canvas hover for node tooltips
+      canvas.addEventListener('mousemove', onCanvasHover);
+      canvas.addEventListener('mouseleave', () => {
+        document.getElementById('nodeTooltip').style.opacity = 0;
+      });
+
+      window.addEventListener('resize', () => {
+        resizeCanvas();
+      });
+    }
+
+    function onCanvasHover(e) {
+      const rect = canvas.getBoundingClientRect();
+      const mx = (e.clientX - rect.left) * (canvas.width / rect.width);
+      const my = (e.clientY - rect.top) * (canvas.height / rect.height);
+      const pos = getNodePositions();
+      const R = Math.max(14, Math.min(canvas.width, canvas.height) * 0.045);
+      const tooltip = document.getElementById('nodeTooltip');
+      let found = false;
+
+      const allNodes = [
+        ...pos.input.map((p, i) => ({ p, type: 'INPUT', idx: i, label: INPUT_LABELS[i] })),
+        ...pos.hidden.map((p, h) => ({ p, type: 'HIDDEN', idx: h, label: `Hidden ${h + 1}` })),
+        ...pos.output.map((p, o) => ({ p, type: 'OUTPUT', idx: o, label: OUTPUT_LABELS[o].text }))
+      ];
+
+      for (const n of allNodes) {
+        const dx = mx - n.p.x, dy = my - n.p.y;
+        if (Math.sqrt(dx * dx + dy * dy) < R * 1.3) {
+          let val;
+          if (n.type === 'INPUT') val = inputs[n.idx];
+          if (n.type === 'HIDDEN') val = hiddenSum[n.idx].toFixed(2);
+          if (n.type === 'OUTPUT') val = outputSum[n.idx].toFixed(2);
+          const scaleX = rect.width / canvas.width;
+          const scaleY = rect.height / canvas.height;
+          tooltip.textContent = `${n.label}: Σ=${val}`;
+          tooltip.style.left = (n.p.x * scaleX) + 'px';
+          tooltip.style.top = ((n.p.y - R * 1.5) * scaleY) + 'px';
+          tooltip.style.opacity = 1;
+          found = true;
+          break;
+        }
+      }
+      if (!found) tooltip.style.opacity = 0;
+    }
+
+    // Override toggleInput to also fire particles
+    const _origToggle = window.toggleInput;
+    window.toggleInput = function (idx) {
+      inputs[idx] = inputs[idx] ? 0 : 1;
+      document.getElementById(`btnI${idx}`).classList.toggle('active', inputs[idx] === 1);
+      phase2Spawned = false;
+      particles = [];
+      fireSignalAnimation();
+      drawNetwork();
+    };
+
+    window.onload = init;
+  </script>
+</body>
+
+</html>
