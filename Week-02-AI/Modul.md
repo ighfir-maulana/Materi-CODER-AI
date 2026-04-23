@@ -1,62 +1,64 @@
-# 🤖 Modul AI: Logika vs Prediksi
+# 🧠 Week 2: Mengenal Jaringan Syaraf Tiruan atau *Artificial Neural Networks* (ANN)
 
 > [!NOTE]
-> **Tujuan Pembelajaran:** Memahami perbedaan antara antara beberapa tipe data yang ada, seperti regression, klasifikasi dan clustering. Setelah itu kiat akan masuk lebih mendalam soal pembahasan ANN, apa bedanya dengan perceptron, serta bagaimana mekansime / cara kerjanya dalam logika matematika dan juga dalam program nya. 
+> **Tujuan Pembelajaran:** Memahami perbedaan antara antara beberapa tipe data yang ada, seperti regression, klasifikasi dan clustering. Setelah itu kita akan masuk lebih mendalam soal pembahasan ANN, apa bedanya dengan _perceptron_, serta bagaimana mekansime / cara kerjanya dalam logika matematika dan juga dalam programnya. 
 
 ---
 
-## 1. 🧠 Tipe Data Dalam AI
+Minggu ini kita mempelajari arsitektur dasar AI yang terinspirasi dari struktur neuron di otak manusia. Sebelum kita melangkah lebih jauh, kita harus tahu kalo ada 2 metode utama dalam _machine learning_, yang mana masing-masing memiliki tipe datanya sendiri. Apa aja jenisnya? _Let's dive in_
 
-AI mempunyai sebuah tipe data nya sendiri, tipe data ini adalah sebuah masalah yang berbeda beda di dunia nyata, setidaknya ada 2 tipe data yang paling umum:
+## 1. 🧠 Metode dalam _Machine Learning_
+Di dunia AI, khususnya di bidang _machine learning_, ada 2 metode utama untuk menyelesaikan _problem_ di dunia nyata, yaitu
 
-### 1. Supervised Learning
+### 1) _Supervised Learning_
+_Supervised Learning_ adalah pembelajaran / proses belajar yang membutuhkan data berlabel, lalu mesin akan belajar dari label itu untuk mendapatkan polanya. 
 
-Supervised Learning adalah pembelajaran yang perlu data berlabel, lalu mesin bakal belajar dari label itu untuk mendapatkan polanya. 
-
-### 2. Unsupervised Learning
-
-Unsupervised Learning adalah pembelajaran yang tidak perlu data berlabel, lalu mesin bakal belajar dari data tersebut untuk mendapatkan polanya. 
+### 2) _Unsupervised Learning_
+_Unsupervised learning_ adalah pembelajaran / proses belajar yang tidak membutuhkan data berlabel, lalu mesin akan belajar dari data tersebut untuk mendapatkan polanya. 
 
 ![Cara Kerja AI](./Assets/9.jpg)
 
-Supervised learning = belajar pakai mentor (ada petunjuk labelnya / ada refrensi mana yang benar dan salah)
+Sederhananya sih gini:
+- _Supervised learning_ = belajar pakai mentor (ada petunjuk labelnya / ada refrensi mana yang benar dan salah)
+- _Unsupervised learning_ = belajar Mandiri (ga ada petunjuk labelnya)
 
-Unsupervised learning = Belajar Mandiri (ga ada petunjuk labelnya)
 
+Dari kedua jenis tipe pembelajarannya, kita bisa memecah _problem_ dalam dunia nyata (_goal_ dari model AI) menjadi 3 hal, yaitu:
+1. Regresi (_Regression_)
+2. Klasifikasi (_Classification_)
+3. Klasterisasi (_Clustering_)
 
-Dari Kedua jenis tipe pembelajarannya, kita bisa memecah problem dalam dunia nyata menjadi 3 hal, yaitu:
+Kita bahas dulu tipe data yang paling umum yaitu regresi dan klasifikasi. 
 
-1. Regresi
-2. Klasifikasi
-3. Clustering 
-
-mari kita bahas dulu tipe data yang paling umum yaitu regresi dan klasifikasi. 
-
-### 1. Regresi (Regression)
-
-Regresi adalah salah satu jenis masalah dalam sebuah machine learning dan juga AI. regresi biasnya di gunakan dalam masalah yang outputnya berupa angka / bilangan kontinu. contohnya:
+### 1. Regresi (_Regression_)
+Regresi adalah salah satu jenis masalah dalam sebuah machine learning dan juga AI. Regresi biasanya digunakan dalam masalah yang _output_-nya berupa angka / bilangan kontinu. contohnya:
 
 - **Prediksi Harga Rumah**
+
 ![Cara Kerja AI](./Assets/1.jpeg)
 
 - **Prediksi Nilai Ujian berdasarkan lamanya belajar**
+
 ![Cara Kerja AI](./Assets/2.png)
 
 - **Prediksi Harga bitcoin**
+
 ![Cara Kerja AI](./Assets/3.jpg)
+
+
+Regresi (_regression_) termasuk kedalam _supervised learning_ (pembelajaran yang terawasi), artinya kita perlu memberikan label terhadap data kita agar mesin mampu mengenali pola dari data tersebut. 
 
 ---
 
-Regresi termasuk kedalam supervising learning (Pembelajaran yang terawasi), artinya kita perlu memberikan label terhadap data kita agar mesin mampu mengenali pola dari data tersebut. 
-
-###2. Klasifikasi (Classification)
-
+### 2. Klasifikasi (_Classification_)
 Klasifikasi adalah jenis masalah yang mengharuskan kita untuk mengkategorikan sesuatu atau menebak sesuatu berdasarkan kategori yang sudah ditentukan. Contohnya:
 
 - **Prediksi apakah email ini spam atau bukan**
+
 ![Cara Kerja AI](./Assets/4.png)
 
 - **Prediksi apakah gambar ini kucing atau anjing**
+
 ![Cara Kerja AI](./Assets/5.jpg)
 
 Robot termasuk salah satu yang sangat bergantung dengan algoritma klasifikasi, agar mampu mengenali lingkungan sekitarnya.
@@ -65,11 +67,11 @@ Robot termasuk salah satu yang sangat bergantung dengan algoritma klasifikasi, a
 
 ---
 
-Klasifikasi termasuk kedalam supervising learning (Pembelajaran yang terawasi), artinya kita perlu memberikan label terhadap data kita agar mesin mampu mengenali pola dari data tersebut. 
+Klasifikasi (_classification_) termasuk kedalam _supervised learning_ (pembelajaran yang terawasi), artinya kita perlu memberikan label terhadap data kita agar mesin mampu mengenali pola dari data tersebut. 
 
-### 3. Clustering (Pengelompokan)
+### 3. Klasterisasi / Pengelompokan (_Clustering_)
 
-Clustering adalah jenis masalah yang mengharuskan kita untuk mengelompokkan sesuatu berdasarkan kemiripan karakteristiknya. Contohnya:
+_Clustering_ adalah jenis masalah yang mengharuskan kita untuk mengelompokkan data secara otomatis tanpa label awal berdasarkan kemiripan karakteristiknya. Contohnya:
 
 - **Segmentasi pelanggan**
 ![Cara Kerja AI](./Assets/7.jpg)
@@ -79,51 +81,69 @@ Clustering adalah jenis masalah yang mengharuskan kita untuk mengelompokkan sesu
 
 ---
 
-Clustering termasuk kedalam unsupervised learning (Pembelajaran yang tidak terawasi), artinya kita tidak perlu memberikan label terhadap data kita. AI akan mengelompokkan data berdasarkan kemiripan karakteristiknya. 
+_Clustering_ termasuk kedalam _unsupervised learning_ (pembelajaran yang tidak terawasi), artinya kita tidak perlu memberikan label terhadap data kita. AI akan mengelompokkan data berdasarkan kemiripan karakteristiknya. 
 
 
-> **Jadi, kalau kita mau membuat AI, Tentukan dulu jenis masalahnya, apakah regresi, klasifikasi, atau justru clustering. baru deh dari situ kta tentukan algoritma apa yang cocok untuk masalah tersebut.**
+> **Jadi, kalau kita mau membuat AI, Tentukan dulu jenis masalahnya, tentukan dulu tujuannya, apakah regresi, klasifikasi, atau justru _clustering_. Baru deh dari situ kita tentukan algoritma apa yang cocok untuk masalah tersebut.**
 
-
-Tipe data dan Jenis masalah yang berbeda menentukan bagaimana Input dan output dari AI tersebut. 
+## 2. 🧠 Tipe Data Dalam AI
+AI mempunyai tipe datanya sendiri. Tipe data ini adalah sebuah masalah yang berbeda-beda di dunia nyata. Tipe data dan jenis masalah yang berbeda menentukan bagaimana input dan output dari AI tersebut. 
 
 ### Untuk INPUT
 
-#### 1. Data Kontinu (Harga Rumah): 
+#### 1. Data Kontinu (contoh: Harga Rumah): 
 Inputnya cuma beberapa kolom (Luas, Lokasi). Jadi Input Layer-nya kecil (misal 2 neuron).
 
-#### 2. Data Tak Terstruktur (Gambar): 
-Inputnya adalah pixel. Kalau gambar dari ESP32-CAM kamu ukurannya 128 x 128, maka Input Layer-nya harus punya 16.384 neuron!
+#### 2. Data Tak Terstruktur (contoh: Gambar): 
+Inputnya adalah pixel. Kalau gambar dari ESP32-CAM kita ukurannya 128 x 128, maka Input Layer-nya harus punya 16.384 neuron!
 
 
 ### Untuk OUTPUT
 
-#### 1. Jika tugasnya Klasifikasi (Kucing vs Anjing): 
+#### 1. Jika tugasnya Klasifikasi (contoh: Kucing vs Anjing): 
 Outputnya harus kategori. Kita butuh fungsi aktivasi seperti Softmax atau Sigmoid agar hasilnya jadi probabilitas (0 sampai 1).
 
-// tambahkan gamabr ilustrasi juag boleh
+> FYI: Sigmoid dan Softmax adalah fungsi yang mengubah angka riil menjadi nilai probabilitas (0 sampai 1). Bedanya, sigmoid untuk klasifikasi biner (contoh: ya atau tidak). Sedangkan softmax untuk klasifikasi multi-kelas (contoh: menentukan hewan apakah itu).
 
-#### 2. Jika tugasnya Regresi (Harga Rumah): 
-Outputnya angka bebas (bisa ratusan juta). Kita tidak boleh pakai Sigmoid di akhir, karena Sigmoid akan membatasi angka maksimal jadi 1. Kita butuh fungsi Linear.
-
+#### 2. Jika tugasnya Regresi (contoh: Harga Rumah): 
+Outputnya angka bebas (bisa ratusan juta). Kita tidak boleh pakai sigmoid di akhir, karena sigmoid akan membatasi angka maksimal jadi 1. Kita butuh fungsi linear.
 
 ---
 
-## 2. ANN
-
-Artificial Neural Network yang merupakan cabang dari machine learning. ANN ini terinspirasi dari cara kerja sistem saraf manusia. 
-
+## 3. _Artificial Neural Network_ (ANN)
+_Artificial Neural Network_ (ANN) merupakan cabang dari machine learning. ANN ini terinspirasi dari **Biological Neuron** di otak manusia. Bedanya, kalau di otak pakai sinyal listrik, di komputer kita pakai angka (matematika). 
 
 Link Simulasi: https://enki1030.github.io/Simulasi_ANN/
 
+Komponen utama sebuah Neuron Digital:
+1.  **Input ($x$)** adalah data mentah yang masuk (misal: nilai pixel, suhu, atau harga).
+2.  **Weights ($w$)** atau bobot. Bobot ini yang menentukan seberapa penting sebuah input terhadap hasil akhir.
+3.  **Bias ($b$)** atau pengimbang yang memungkinkan model untuk lebih fleksibel dalam mengambil keputusan.
+4.  **Activation Function** adalah penentu apakah neuron tersebut harus "aktif" (mengirimkan sinyal) atau tidak.
+
+Oke, sudah mulai masuk dunia per x dan w nya ya wkkwk. Tapi tenang aja. Intinya, satu neuron itu cuma melakukan operasi linear sederhana.
+
+### Linear Combination
+Semua input dikali bobot, lalu ditambah bias:
+$$z = (x_1 \cdot w_1) + (x_2 \cdot w_2) + ... + (x_n \cdot w_n) + b$$
+
+Atau dalam bentuk ringkas (**Dot Product**):
+$$z = \sum_{i=1}^{n} (x_i \cdot w_i) + b$$
+
+### Activation Function
+Hasil $z$ tadi dimasukkan ke dalam "filter" non-linear. Dua yang paling sering dipakai:
+* **Sigmoid**. Dulu, ini adalah "raja"-nya activation function. Bentuknya melengkung halus menyerupai huruf S. Rumusnya matematikanya: $$\sigma(z) = \frac{1}{1 + e^{-z}}$$.
+
+[gambar sigmoid]
+
+Sigmoid paling sering digunakan di Output Layer untuk kasus _Binary Classification_. Karena hasilnya antara 0-1, kita bisa menganggapnya sebagai probabilitas. Misal: hasil 0.8 berarti "80% kemungkinan ini adalah gambar kucing". Tapi sigmoid ini memiliki kelemahan yaitu ketika nilai $z$ terlalu besar (misal 10) atau terlalu kecil (-10), gradien (turunannya) akan sangat mendekati nol. Pas _Backpropagation_, "sinyal belajar" ini makin lama makin hilang sehingga membuat model berhenti belajar. Tapi sekarang ada `ReLU`
+
+* **ReLU (Rectified Linear Unit)**. Sekarang, ReLU adalah standar _default_ di hampir semua Hidden Layer karena performanya yang gila-gilaan. Rumus matematikanya: $$f(z) = \max(0, z)$$. Sedangkan rentang Outputnya: 0 sampai $\infty$ (Infinity). Tapi kenapa ReLU menjadi standar industri sekarang? Karena ketika kita menggunakan ReLU, komputer ga perlu ngitung rumus rumit, cuma perlu ngecek "Kalau angka ini minus, jadiin nol. Kalau plus, biarin." Sesimpel itu!. Juga sebagai solusi untuk kelemahan sigmoid yaitu dapat membuat gradiennya selalu 1, Selama nilai $z$ positif. Artinya, sinyal belajar bakal terus mengalir kuat sampai ke layer paling awal. Tapi ReLU ini juga punya kelemahan, yaitu ketika sebuah neuron terus-terusan dapet input negatif, dia akan mengeluarkan output 0 secara permanen. Neuron ini jadi "mati" karena ga ada aliran informasi lagi. (Solusinya biasanya pakai variasi lain kayak Leaky ReLU).
 
 ---
 
-### 3. Bagaimana Cara kerja ANN 
-
-Cara kerja ANN sebenarnya cukup mudah untuk di pahami.
-
-ANN terdiri dari 3 lapisan utama:
+### Bagaimana Cara kerja ANN?
+Cara kerja ANN sebenarnya cukup mudah untuk di pahami. ANN terdiri dari 3 lapisan utama:
 
 #### Input Layer -> Hidden Layer -> Output Layer
 
@@ -133,14 +153,13 @@ ANN terdiri dari 3 lapisan utama:
 - **2. Backpropagation**
 
 
-#### 1. Feed Forward / Forward Pass
+#### 1. _Feed Forward / Forward Pass_
 
 ![Cara Kerja AI](./Assets/10.gif)
 
-Feed Forward adalah proses perhitungan matematika yang dlakukan ANN untuk memprediksi atau mendapatkan hasil (Output) dari inputan. 
+Feed Forward adalah proses perhitungan matematika yang dlakukan ANN untuk memprediksi atau mendapatkan hasil (output) dari inputan. (Data masuk dari input layer $\rightarrow$ diproses hidden layers $\rightarrow$ keluar sebagai prediksi di output layer.)
 
 #### 1. Input Layer
-
 Tugas nya untuk menerima inputan, inputanya bisa berupa angka atau gambar. 
 
 - Data Angka (Prediski Harga HP)
@@ -150,19 +169,30 @@ Tugas nya untuk menerima inputan, inputanya bisa berupa angka atau gambar.
 - Data Gambar (Prediksi Anjing)
 ![Cara Kerja AI](./Assets/12.png)
 
-#### 2. Hidden Layer
+#### 2. _Hidden Layer_
+_Hidden layer_ (lapisan tersembunyi) adalah lapisan neuron buatan yang terletak di antara _input layer_ dan _output layer_ dalam ANN atau _deep learning_. Lapisan ini tidak berinteraksi langsung dengan data mentah dari luar, melainkan memproses informasi yang diteruskan oleh _input layer_.
 
-Tugas tergantung, kalau di traning, tugas nya adalah untuk melakukan esktraksi data dan pola agar dengan cara menyesuaikan bobotnya dan biasnya (bagian Backpropagation).
+_Hidden layer_ ini memiliki tugas yang berbeda di setiap fase pemodelan _machine learning_. Kalau di fase _traning_, tugasnya adalah untuk melakukan esktraksi data dan pola agar dengan cara menyesuaikan bobotnya dan biasnya (bagian _backpropagation_). Contoh:
+- Hidden Layer 1: Cuma belajar deteksi garis/tepi (_edges_).
+- Hidden Layer 2: Mulai belajar bentuk (lingkaran, kotak).
+- Hidden Layer 3: Mulai mengenali objek (mata, hidung, roda).
 
-kalau dalam tes, tugasnya adalah untuk mencocokkan inputan tersebut apakah sesuai dengan pola yang sudah di traning atau tidak. (Bagian Forward Pass)
+Kalau dalam fase _testing_, tugasnya adalah untuk mencocokkan inputan tersebut apakah sesuai dengan pola yang sudah di _traning_ atau tidak. (bagian _forward pass_)
 
-> **(Pembahasan lebih lanjut feed forward melalui sebuah tes nantinya. Di sini di jelasin mekanisme mulai dari rumus yang di gunakan sampai Fungsi aktivasi yang biasanya di gunakan.)
-Di sini akan berisi rumus, tempat dilaukannay perhitungan matematika, Logika pemrogramannya. 
+Lalu kenapa kita harus ada menggunakan _hidden layer_? Sebenarnya ga harus sih. Cuman kalo kita ga pake _hidden layer_, model kita cuma bisa menyelesaikan masalah linear yang sangat simpel. Jadi, semakin banyak (dalam) _hidden layer_-nya, semakin "pintar" model kita mengenali pola yang susah.
 
-#### 3. Output Layer
+> **(Pembahasan lebih lanjut _feed forward_ melalui sebuah tes nantinya. Di sini di jelasin mekanisme mulai dari rumus yang digunakan sampai Fungsi aktivasi yang biasanya di gunakan.)
+Di sini akan berisi rumus, tempat dilakukannya perhitungan matematika, logika pemrogramannya. 
 
-Output Layer adalah Lapisan terakhir yang mengembalikan hasil akhir dari pemrosesan Hidden Layer.
+#### 3. _Output Layer_
+_Output layer_ adalah lapisan terakhir yang mengembalikan hasil akhir dari pemrosesan _hidden layer_. Jumlah neuron di sini **wajib** menyesuaikan dengan jenis tugas AI-nya.
 
+Tugasnya _output layer_ adalah mengubah semua hasil "pemikiran" dari _hidden layers_ menjadi format yang kita mengerti (misal: Prediksi angka atau label kategori).
+
+Konfigurasi Neuron:
+- Regression (Prediksi Angka). Biasanya cuma 1 neuron. Contoh: Outputnya 250.000 (prediksi harga).
+- _Binary Classification_ (2 Kelas). Biasanya 1 neuron dengan aktivasi Sigmoid. Outputnya 0.9 (artinya 90% yakin ini Kucing).
+- _Multi-class Classification_ (Banyak Kelas). Jumlah neuron = jumlah kategori. Misal mau tebak angka 0-9, maka ada 10 neuron. Biasanya pakai aktivasi Softmax agar total semua output jadi 1 (100%).
 
 #### 2. Backpropagation
 
