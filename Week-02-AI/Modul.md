@@ -179,7 +179,9 @@ _Hidden layer_ ini memiliki tugas yang berbeda di setiap fase pemodelan _machine
 
 Kalau dalam fase _testing_, tugasnya adalah untuk mencocokkan inputan tersebut apakah sesuai dengan pola yang sudah di _traning_ atau tidak. (bagian _forward pass_)
 
-Lalu kenapa kita harus ada menggunakan _hidden layer_? Sebenarnya ga harus sih. Cuman kalo kita ga pake _hidden layer_, model kita cuma bisa menyelesaikan masalah linear yang sangat simpel. Jadi, semakin banyak (dalam) _hidden layer_-nya, semakin "pintar" model kita mengenali pola yang susah.
+Lalu kenapa kita harus ada menggunakan _hidden layer_? Sebenarnya ga harus sih. Cuman kalo kita ga pake _hidden layer_, model kita cuma bisa menyelesaikan masalah linear yang sangat simpel.
+
+Jadi, semakin banyak (dalam) _hidden layer_-nya, semakin "pintar" model kita mengenali pola yang susah. Tapi juga jangan asal nambahin _hidden layer_ sampai ratusan / berlebihan. Terlalu banyak _hidden layer_ tapi datanya ga cukup malah buat model kita jadi _Overfitting_ alias jago di data latihan tapi 'dongo' pas ketemu data asli di lapangan. Kuncinya adalah eksperimen.
 
 > **(Pembahasan lebih lanjut _feed forward_ melalui sebuah tes nantinya. Di sini di jelasin mekanisme mulai dari rumus yang digunakan sampai Fungsi aktivasi yang biasanya di gunakan.)
 Di sini akan berisi rumus, tempat dilakukannya perhitungan matematika, logika pemrogramannya. 
@@ -198,9 +200,9 @@ Konfigurasi Neuron:
 
 ![Cara Kerja AI](./Assets/13.gif)
 
-Backpropagation adalah proses penyesuaian bobot dan bias pada ANN agar menghasilkan output yang lebih akurat.
+Backpropagation adalah proses penyesuaian bobot dan bias pada ANN agar menghasilkan output yang lebih akurat atau bisa disebut "evaluasi".
 
-ada dua langkah dalam backpropagation, yaitu:
+Ada dua langkah dalam _backpropagation_, yaitu:
 
 1. **Hitung Error:**
 
@@ -220,6 +222,9 @@ Gradient adalah perubahan nilai Error berdasarkan perubahan bobot dan bias.
 
 Bobot dan bias diupdate agar hasil prediksinya semakin bagus. Proses ini di ulangi berkali-kali sampai Error mencapai ambang batas tertentu.
 
+Atau simpelnya gini:
+- Model akan menghitung bagian mana dari *weights* ($w$) yang paling bikin "salah".
+- Kemudian model  meng-_update_ $w$ dan $b$ sedikit demi sedikit agar di iterasi berikutnya error-nya makin kecil.
 
 ---
 
@@ -227,7 +232,7 @@ Bobot dan bias diupdate agar hasil prediksinya semakin bagus. Proses ini di ulan
 
 ANN dan Perceptron adalah dua hal yang berkaitan namun memiliki perbedaan yang cukup signifikan.
 
-Perbedaan ANN dan Perceptron terletak pada jumlah Hidden Layer yang dimilikinya. ANN memiliki lebih dari satu Hidden Layer, sedangkan Perceptron hanya memiliki satu Hidden Layer.
+Perbedaan ANN dan Perceptron terletak pada jumlah _hidden layer_ yang dimilikinya. ANN memiliki lebih dari satu _hidden layer_, sedangkan Perceptron hanya memiliki satu Hidden Layer.
 
 ![Cara Kerja AI](./Assets/17.png)
 
@@ -236,3 +241,34 @@ Perbedaan ANN dan Perceptron terletak pada jumlah Hidden Layer yang dimilikinya.
 ### 5. Implementasi ANN dalam Program
 
 > Praktikum
+
+```python
+import numpy as np
+
+# 1. Input (Misal: Luas Tanah, Jumlah Kamar, Usia Rumah)
+inputs = np.array([1.0, 2.0, 3.0])
+
+# 2. Weights (Awalnya random, nanti di-update pas training)
+weights = np.array([0.2, 0.8, -0.5])
+
+# 3. Bias (Anggap saja konstanta penyeimbang)
+bias = 2.0
+
+# 4. Dot Product (Input * Weights + Bias)
+z = np.dot(inputs, weights) + bias
+print(f"Linear Result (z): {z}")
+
+# 5. Activation Function (ReLU)
+def relu(x):
+    return max(0, x)
+
+output = relu(z)
+print(f"Neuron Output: {output}")
+```
+
+_let's play_
+1. Buka [Google Teachable Machine](https://teachablemachine.withgoogle.com/).
+2. Pilih `Image Project`.
+3. Buat 2 Kelas (Contoh: "Pakai Masker" dan "Tidak Pakai Masker").
+4. Klik `Train Model`.
+5. Lihat gimana model ANN di belakang layar belajar mengenali pola wajah kita  secara _real-time_.
