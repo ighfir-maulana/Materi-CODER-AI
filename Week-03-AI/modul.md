@@ -186,19 +186,7 @@ Gradient malah **tumbuh** — dan tidak menghilang ke layer-layer awal.
 
 ### 🖊️ Latihan Hitung Manual
 
-Coba hitung sendiri untuk kasus berikut:
-
-**Soal 1:**
-Jaringan 3 blok ResNet, setiap blok punya 2 layer dengan bobot `W = 0.3`.
-- Hitung gradient tanpa skip connection (6 layer)
-- Hitung gradient dengan skip connection
-- Berapa perbedaannya?
-
-**Soal 2:**
-Jaringan 5 blok ResNet dengan bobot `W = 0.8`.
-- Apa yang terjadi pada gradient tanpa skip?
-- Apa yang terjadi dengan skip? Apakah bisa exploding gradient?
-- Bagaimana cara mengatasinya?
+bandingkan untuk perhitungan neuron dan gradient antara resnet dan ann biasa dengan jumlah neuron yang sama
 
 *(Diskusikan jawaban bersama setelah mencoba sendiri!)*
 
@@ -251,7 +239,7 @@ Input (x)
               │
            Output
 ```
-
+![Transformer Block](assets/7.png)
 **ResNet dan Transformer menggunakan prinsip yang sama.** Belajar ResNet sekarang = fondasi untuk memahami GPT, BERT, dan Claude nanti.
 
 ---
