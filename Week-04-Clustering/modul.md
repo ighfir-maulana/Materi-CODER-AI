@@ -1,0 +1,199 @@
+# 🌌 Minggu 4: Unsupervised Learning — Seni Menemukan Pola dalam Kekacauan
+
+> [!NOTE]
+> **Tujuan Pembelajaran:** 
+> Memahami kekuatan AI untuk mengorganisir data tanpa bantuan label ("kunci jawaban"). Kita akan mengeksplorasi bagaimana mesin bisa "berpikir" seperti seorang arkeolog untuk menemukan struktur tersembunyi di dunia nyata.
+
+---
+
+## 1. 🎭 Sang Guru vs Sang Arkeolog (Konsep Dasar)
+
+Sebelumnya, kita belajar **Supervised Learning** (Pembelajaran Terarah). Bayangkan itu seperti belajar dengan Guru: Ada soal, ada kunci jawaban. AI hanya bertugas mencocokkan pola agar hasilnya sama dengan kunci jawaban.
+
+Namun, bagaimana jika **tidak ada kunci jawaban**? Inilah **Unsupervised Learning**.
+
+- **Supervised Learning (Sang Murid):** "Guru bilang ini foto kucing, maka saya cari ciri-ciri kucing berdasarkan contoh yang sudah dilabeli 'kucing'."
+- **Unsupervised Learning (Sang Arkeolog):** "Saya punya seribu artefak kuno. Saya tidak tahu namanya, tapi yang ini bentuknya kotak, yang itu bulat. Saya akan kelompokkan mereka berdasarkan kemiripannya."
+
+**Pesan Utama:** Unsupervised learning bukan tentang menebak benar/salah, tapi tentang **mengenali struktur, pola, dan anomali** dalam lautan data.
+
+---
+
+## 2. 🎵 Keajaiban di Balik Layar: Spotify & TikTok
+
+Pernahkah kalian bertanya-tanya bagaimana TikTok tahu video apa yang kalian suka, padahal kalian tidak pernah mengisi survei? 
+
+TikTok dan Spotify merekam setiap detik perilaku kalian (apa yang di-skip, apa yang ditonton ulang, genre apa yang sering didengar). Data mentah ini masuk ke algoritma **Clustering**.
+
+AI tidak secara ajaib tahu kalian "Suka K-Pop". AI hanya memproses angka dan berkata: 
+*"User Niko punya pola interaksi yang sangat mirip dengan Cluster #402 (yang secara kebetulan adalah kelompok pengguna yang sering mendengarkan lagu K-Pop)."*
+
+Boom! Rekomendasi kalian pun muncul dengan sangat presisi.
+
+---
+
+## 3. 🎮 Interactive Game: "The Ghost Pattern"
+
+**Instruksi untuk Mahasiswa:**
+Bayangkan kalian diberikan sekumpulan objek acak (misalnya: apel merah, bola kasti hijau, mobil mainan merah, daun hijau). Tugas kalian adalah membaginya menjadi beberapa kelompok.
+
+**Diskusikan:**
+- Siapa yang mengelompokkan berdasarkan **Warna**? (Merah vs Hijau)
+- Siapa yang mengelompokkan berdasarkan **Bentuk**? (Bulat vs Tidak Bulat)
+- Siapa yang mengelompokkan berdasarkan **Fungsi/Kategori**? (Benda alam vs Buatan manusia)
+
+**Pelajaran:** 
+Dalam Unsupervised Learning, **semua pengelompokan kalian Benar**. Hasil akhir sangat bergantung pada karakteristik (fitur) apa yang menurut mesin paling menonjol atau yang kita minta mesin perhatikan. Itulah yang disebut **Feature Selection**.
+
+---
+
+## 4. ⚙️ Simulasi Algoritma: Dari Kaku ke Bijak
+
+Di dunia *Machine Learning*, sebenarnya ada banyak sekali "jalan" atau pendekatan algoritma untuk melakukan *clustering*. Secara garis besar, terlepas dari metodenya, tujuan utamanya selalu sama: **mengukur jarak atau kedekatan** antar data untuk memisahkan mereka menjadi "pulau-pulau" atau kelompok yang punya karakteristik serupa.
+
+Ada algoritma yang bekerja dengan mengukur jarak fisik antar titik data, ada yang mengelompokkan data berdasarkan seberapa padat mereka menumpuk di satu area (*density-based*), dan ada pula yang membangun silsilah hierarki pengelompokan dari yang terkecil hingga terbesar.
+
+Namun dari sekian banyak metode tersebut, **K-Means** selalu menjadi "pintu gerbang utama" yang wajib dipelajari dan merupakan metode *clustering* yang **paling sering dipakai di industri**. Mengapa demikian?
+
+1. **Sangat Cepat & Skalabel:** K-Means mengandalkan perhitungan jarak sederhana. Ia bisa memproses jutaan baris data jauh lebih cepat dibandingkan metode lain yang membutuhkan peta komputasi kompleks.
+2. **Sederhana & Intuitif:** Konsepnya sangat logis. Ia hanya mencari titik pusat (*centroid*) dari sebuah kerumunan dan menarik data terdekat ke arahnya. Ini membuatnya sangat mudah dijelaskan kepada tim bisnis atau klien.
+3. **Sangat Praktis untuk Kebutuhan Bisnis:** Dalam dunia nyata (misalnya: segmentasi pelanggan, menentukan zonasi logistik, atau membagi paket layanan berlangganan), perusahaan biasanya **sudah tahu atau memiliki target** berapa kelompok yang mereka inginkan. Karena di K-Means kita yang menentukan jumlah klaster ("K") sejak awal, algoritma ini menjadi solusi yang *to the point*.
+
+Mari kita berkenalan langsung dengan sang primadona *clustering* ini!
+
+### A. K-Means: "Permainan Mencari Teman"
+
+K-Means adalah algoritma *clustering* paling populer karena kesederhanaannya dan kecepatannya.
+
+**Cara Kerjanya:**
+1. **Inisialisasi:** Tentukan $K$ (misal 3) titik acak sebagai "Pusat Kelompok" (Centroid).
+2. **Assignment:** Setiap data "berlari" ke Centroid yang jaraknya paling dekat.
+3. **Update:** Centroid pindah ke tengah-tengah (rata-rata) dari kerumunan barunya.
+4. **Repeat:** Ulangi langkah 2 dan 3 sampai tidak ada lagi data yang berpindah tempat (konvergen).
+
+**💻 Implementasi K-Means dengan Python:**
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
+from sklearn.datasets import make_blobs
+
+# 1. Membuat data buatan (3 kelompok)
+X, y = make_blobs(n_samples=300, centers=3, cluster_std=0.60, random_state=0)
+
+# 2. Inisialisasi dan melatih K-Means
+kmeans = KMeans(n_clusters=3, random_state=42, n_init=10)
+kmeans.fit(X)
+
+# 3. Memprediksi kelompok untuk setiap data
+y_kmeans = kmeans.predict(X)
+
+# 4. Visualisasi hasil
+plt.figure(figsize=(8, 5))
+plt.scatter(X[:, 0], X[:, 1], c=y_kmeans, s=50, cmap='viridis')
+
+# Menampilkan Centroid
+centers = kmeans.cluster_centers_
+plt.scatter(centers[:, 0], centers[:, 1], c='red', s=200, alpha=0.75, marker='X', label='Centroid')
+
+plt.title('Clustering menggunakan K-Means')
+plt.legend()
+plt.show()
+```
+
+### B. EM (Expectation-Maximization) dengan Gaussian Mixture: "Si Bijak yang Luwes"
+
+Jika K-Means itu kaku ("Kamu harus 100% masuk Kelompok A!"), algoritma berbasis probabilitas seperti **Gaussian Mixture Models (GMM) dengan EM** itu lebih luwes ("Kamu 70% cocok dengan Kelompok A, tapi ada 30% sifat Kelompok B").
+
+**Masalah MLE (Maximum Likelihood):** MLE konvensional sering gagal pada data tak berlabel karena dia butuh "kepastian" untuk menghitung parameter.
+**Solusi EM:**
+- **E-Step (Expectation):** Tebak dulu, siapa milik siapa berdasarkan probabilitas.
+- **M-Step (Maximization):** Perbarui model (rata-rata dan varians) berdasarkan tebakan probabilitas tadi.
+- **Hasil:** Pengelompokan yang jauh lebih halus (soft clustering) dan akurat untuk data yang bentuknya tidak bulat sempurna atau saling menumpuk.
+
+**💻 Implementasi GMM dengan Python:**
+
+```python
+from sklearn.mixture import GaussianMixture
+
+# Menggunakan data X yang sama seperti di atas
+# 1. Inisialisasi GMM
+gmm = GaussianMixture(n_components=3, random_state=42)
+gmm.fit(X)
+
+# 2. Memprediksi kelompok (Hard assignment)
+labels = gmm.predict(X)
+
+# 3. Melihat probabilitas (Soft assignment)
+# Menampilkan probabilitas 5 data pertama masuk ke masing-masing cluster
+probs = gmm.predict_proba(X)
+print("Probabilitas 5 data pertama:")
+print(np.round(probs[:5], 3))
+
+# 4. Visualisasi hasil GMM
+plt.figure(figsize=(8, 5))
+plt.scatter(X[:, 0], X[:, 1], c=labels, s=50, cmap='plasma')
+plt.title('Soft Clustering menggunakan Gaussian Mixture Model (EM)')
+plt.show()
+```
+
+---
+
+## 5. 🏗️ Jembatan Menuju Masa Depan
+
+Unsupervised Learning bukan hanya dipakai sendirian untuk pengelompokan. Seringkali, ini adalah langkah awal yang sangat krusial sebelum kita melakukan Supervised Learning (biasa disebut **Semi-Supervised Learning** atau data preprocessing).
+
+**Alur Kerjanya:**
+1. **Cluster (Unsupervised):** Kita punya jutaan data sensor suhu dan getaran dari robot racing tanpa label. Kita kelompokkan dulu menggunakan algoritma seperti K-Means.
+2. **Label (Human Intervention):** Kita cek hasil kelompok tersebut dan beri nama. (Misal: Kelompok 1 = "Kondisi Normal", Kelompok 2 = "Tikungan Tajam", Kelompok 3 = "Anomali/Mesin Overheat").
+3. **Predict (Supervised):** Setelah data sekarang memiliki label buatan, kita latih jaringan saraf tiruan (Neural Network) untuk mengenali label tersebut secara otomatis di masa depan secara real-time.
+
+---
+
+## 6. 🚀 Studi Kasus (Anomaly Detection)
+
+Bayangkan kita memasang sensor akselerometer (Mpu6050) pada ESP32-CAM kalian untuk merekam getaran motor selama balapan.
+
+Jika tiba-tiba muncul sebuah titik data yang membentuk *cluster* baru sendirian di pojok (jaraknya sangat jauh dari data normal)...
+Mesin tidak tahu itu apa (dia tidak diajari tentang kerusakan), tapi dia secara mandiri memberi peringatan: **"Sesuatu yang aneh sedang terjadi."**
+
+Ini adalah kunci dari **Anomaly Detection (Deteksi Anomali)**—mencegah kerusakan sebelum robot kalian benar-benar rusak/meledak.
+
+**💻 Implementasi Anomaly Detection dengan Isolation Forest:**
+
+```python
+from sklearn.ensemble import IsolationForest
+
+# Membuat data sensor dummy (Normal)
+np.random.seed(42)
+X_normal = 0.3 * np.random.randn(100, 2)
+
+# Membuat data anomali (Getaran ekstrem)
+X_outliers = np.random.uniform(low=-4, high=4, size=(20, 2))
+
+# Menggabungkan data
+X_sensor = np.r_[X_normal, X_outliers]
+
+# Melatih Model Isolation Forest
+clf = IsolationForest(contamination=0.15, random_state=42)
+clf.fit(X_sensor)
+
+# Prediksi: 1 untuk normal, -1 untuk anomali
+y_pred = clf.predict(X_sensor)
+
+# Visualisasi Deteksi Anomali
+plt.figure(figsize=(8, 5))
+colors = np.array(['red', 'blue'])
+# Kita map -1 ke 0 (red) dan 1 ke 1 (blue) untuk warna
+plt.scatter(X_sensor[:, 0], X_sensor[:, 1], color=colors[(y_pred + 1) // 2], s=50, edgecolor='k')
+
+plt.title("Deteksi Anomali Sensor ESP32 (Merah = Anomali, Biru = Normal)")
+plt.xlabel("Sensor Getaran X")
+plt.ylabel("Sensor Getaran Y")
+plt.show()
+```
+
+---
+
+> *"AI tidak butuh didikte untuk menjadi pintar. Dengan Unsupervised Learning, kalian memberikan mesin kemampuan untuk menemukan rahasia yang bahkan tidak terlihat oleh mata manusia."* 🌌
