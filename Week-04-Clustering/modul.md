@@ -1,14 +1,13 @@
 # 🌌 Minggu 4: Unsupervised Learning — Seni Menemukan Pola dalam Kekacauan
 
-> [!NOTE]
 > **Tujuan Pembelajaran:** 
-> Memahami kekuatan AI untuk mengorganisir data tanpa bantuan label ("kunci jawaban"). Kita akan mengeksplorasi bagaimana mesin bisa "berpikir" seperti seorang arkeolog untuk menemukan struktur tersembunyi di dunia nyata.
+> Memahami kekuatan AI untuk mengorganisir data tanpa bantuan label atau "kunci jawaban". Kita akan mengeksplorasi bagaimana mesin bisa "berpikir" seperti seorang arkeolog untuk menemukan struktur tersembunyi di dunia nyata.
 
 ---
 
 ## 1. 🎭 Sang Guru vs Sang Arkeolog (Konsep Dasar)
 
-Sebelumnya, kita belajar **Supervised Learning** (Pembelajaran Terarah). Bayangkan itu seperti belajar dengan Guru: Ada soal, ada kunci jawaban. AI hanya bertugas mencocokkan pola agar hasilnya sama dengan kunci jawaban.
+Sebelumnya, kita belajar **Supervised Learning** (pembelajaran terawasi). Bayangkan itu seperti belajar dengan Guru: Ada soal, ada kunci jawaban. AI hanya bertugas mencocokkan pola agar hasilnya sama dengan kunci jawaban.
 
 Namun, bagaimana jika **tidak ada kunci jawaban**? Inilah **Unsupervised Learning**.
 
@@ -20,10 +19,13 @@ Namun, bagaimana jika **tidak ada kunci jawaban**? Inilah **Unsupervised Learnin
 ---
 
 ## 2. 🎵 Keajaiban di Balik Layar: Spotify & TikTok
+![logo tiktok dan spotify](assets/1.jpg)
 
-Pernahkah kalian bertanya-tanya bagaimana TikTok tahu video apa yang kalian suka, padahal kalian tidak pernah mengisi survei? 
+Kalina pernah ga si kepikiran gimana TikTok tahu video apa yang kalian suka, padahal kalian tidak pernah mengisi survei? 
 
 TikTok dan Spotify merekam setiap detik perilaku kalian (apa yang di-skip, apa yang ditonton ulang, genre apa yang sering didengar). Data mentah ini masuk ke algoritma **Clustering**.
+
+![Clustering](assets/2.png)
 
 AI tidak secara ajaib tahu kalian "Suka K-Pop". AI hanya memproses angka dan berkata: 
 *"User Niko punya pola interaksi yang sangat mirip dengan Cluster #402 (yang secara kebetulan adalah kelompok pengguna yang sering mendengarkan lagu K-Pop)."*
@@ -34,26 +36,40 @@ Boom! Rekomendasi kalian pun muncul dengan sangat presisi.
 
 ## 3. 🎮 Interactive Game: "The Ghost Pattern"
 
-**Instruksi untuk Mahasiswa:**
-Bayangkan kalian diberikan sekumpulan objek acak (misalnya: apel merah, bola kasti hijau, mobil mainan merah, daun hijau). Tugas kalian adalah membaginya menjadi beberapa kelompok.
+![game](assets/3.png)
+Bayangkan kita diberikan sekumpulan objek acak (misalnya: apel merah, bola kasti hijau, mobil mainan merah, daun hijau). Tugas kita adalah membaginya menjadi beberapa kelompok.
 
-**Diskusikan:**
 - Siapa yang mengelompokkan berdasarkan **Warna**? (Merah vs Hijau)
 - Siapa yang mengelompokkan berdasarkan **Bentuk**? (Bulat vs Tidak Bulat)
 - Siapa yang mengelompokkan berdasarkan **Fungsi/Kategori**? (Benda alam vs Buatan manusia)
 
 **Pelajaran:** 
-Dalam Unsupervised Learning, **semua pengelompokan kalian Benar**. Hasil akhir sangat bergantung pada karakteristik (fitur) apa yang menurut mesin paling menonjol atau yang kita minta mesin perhatikan. Itulah yang disebut **Feature Selection**.
+Dalam Unsupervised Learning, **semua pengelompokan kita benar**. Hasil akhir sangat bergantung pada karakteristik (fitur) apa yang menurut mesin paling menonjol atau yang kita minta mesin perhatikan. Itulah yang disebut **Feature Selection**.
 
 ---
 
-## 4. ⚙️ Simulasi Algoritma: Dari Kaku ke Bijak
+## 4. 👑 Preprocessing Is King 
+> **"In the industry, data doesn't come with labels; it comes with noise, bias, and dirt. This is your survival guide to finding signals in the noise."**
+
+Sebelum menyentuh algoritma *clustering*, ada satu teknik yang wajib kita pelajari, yaitu **Feature Scaling.**
+
+K-Means dan algoritma berbasis jarak lainnya sangat sensitif terhadap satuan. Jika fitur `Gaji` (skala jutaan) dicampur dengan `Usia` (skala puluhan), maka `Usia` akan dianggap sebagai *noise* karena variansi jaraknya yang **kecil**.
+
+**Standardization (Z-Score):**
+Kita mentransformasi data agar memiliki rata-rata ($\mu$) = 0 dan standar deviasi ($\sigma$) = 1.
+$$z = \frac{x - \mu}{\sigma}$$
+
+Tanpa teknik ini, model *clustering* kita akan "buta" terhadap fitur dengan skala kecil tapi memiliki informasi penting.
+
+---
+
+## 5. ⚙️ Simulasi Algoritma, Dari Kaku ke Bijak
 
 Di dunia *Machine Learning*, sebenarnya ada banyak sekali "jalan" atau pendekatan algoritma untuk melakukan *clustering*. Secara garis besar, terlepas dari metodenya, tujuan utamanya selalu sama: **mengukur jarak atau kedekatan** antar data untuk memisahkan mereka menjadi "pulau-pulau" atau kelompok yang punya karakteristik serupa.
 
 Ada algoritma yang bekerja dengan mengukur jarak fisik antar titik data, ada yang mengelompokkan data berdasarkan seberapa padat mereka menumpuk di satu area (*density-based*), dan ada pula yang membangun silsilah hierarki pengelompokan dari yang terkecil hingga terbesar.
 
-Namun dari sekian banyak metode tersebut, **K-Means** selalu menjadi "pintu gerbang utama" yang wajib dipelajari dan merupakan metode *clustering* yang **paling sering dipakai di industri**. Mengapa demikian?
+Namun dari sekian banyak metode tersebut, **K-Means** selalu menjadi "pintu gerbang utama" yang wajib dipelajari dan merupakan metode *clustering* yang **paling sering dipakai di industri**. Kenapa?
 
 1. **Sangat Cepat & Skalabel:** K-Means mengandalkan perhitungan jarak sederhana. Ia bisa memproses jutaan baris data jauh lebih cepat dibandingkan metode lain yang membutuhkan peta komputasi kompleks.
 2. **Sederhana & Intuitif:** Konsepnya sangat logis. Ia hanya mencari titik pusat (*centroid*) dari sebuah kerumunan dan menarik data terdekat ke arahnya. Ini membuatnya sangat mudah dijelaskan kepada tim bisnis atau klien.
@@ -71,7 +87,7 @@ K-Means adalah algoritma *clustering* paling populer karena kesederhanaannya dan
 3. **Update:** Centroid pindah ke tengah-tengah (rata-rata) dari kerumunan barunya.
 4. **Repeat:** Ulangi langkah 2 dan 3 sampai tidak ada lagi data yang berpindah tempat (konvergen).
 
-**💻 Implementasi K-Means dengan Python:**
+**💻 Implementasi K-Means dengan Python**
 
 ```python
 import numpy as np
@@ -102,17 +118,48 @@ plt.legend()
 plt.show()
 ```
 
+Dengan kata lain:
+*   **Dalam logika visual,** ia menaruh titik tengah (*Centroid*) secara acak, lalu memaksa setiap data untuk "setia" pada satu kelompok terdekat.
+*   **Dalam matematika,** ia meminimalkan **inertia** atau *Within-Cluster Sum of Squares* (WCSS):
+$$J = \sum_{i=1}^{k} \sum_{x \in C_i} ||x - \mu_i||^2$$
+
+Dimana:
+- $k$ = Jumlah klaster.
+- $C_i$ = Klaster ke-$i$.
+- $x$ = Titik data dalam klaster.
+- $\mu _i$: Centroid (titik pusat) dari klaster $C_i$.
+- $||x - \mu_i||^2$: Kuadrat jarak Euclidean antara titik data dan centroid.
+
+
+> Inersia menghitung total kuadrat jarak antara setiap titik data dan centroid (pusat) klaster yang ditugaskan kepadanya.
+
+> Nilai inersia **rendah** berarti klaster yang padat dan terdefinisi dengan baik (titik data sangat dekat dengan pusat klastenya).
+
+> Nilai inersia **tinggi** berarti klaster yang tersebar luas (kurang optimal).
+*   **Masalahnya,** dalam dunia industri, K-Means gagal jika data kita tumpang tindih (*overlapping*) atau berbentuk lonjong. Ia terlalu kaku karena memberikan keputusan **0 atau 1** (*Hard Assignment*).
+
 ### B. EM (Expectation-Maximization) dengan Gaussian Mixture: "Si Bijak yang Luwes"
 
-Jika K-Means itu kaku ("Kamu harus 100% masuk Kelompok A!"), algoritma berbasis probabilitas seperti **Gaussian Mixture Models (GMM) dengan EM** itu lebih luwes ("Kamu 70% cocok dengan Kelompok A, tapi ada 30% sifat Kelompok B").
+Jika K-Means itu kaku ("Kamu harus 100% masuk Kelompok A"), algoritma berbasis probabilitas seperti **Gaussian Mixture Models (GMM) dengan EM** itu lebih luwes ("Kamu 70% cocok dengan Kelompok A, tapi ada 30% sifat Kelompok B") untuk data industri yang berantakan yang mana kita butuh nuansa "mungkin". Algoritma EM (digunakan pada **Gaussian Mixture Models**) memberikan nilai probabilitas (0.0 sampai 1.0).
 
-**Masalah MLE (Maximum Likelihood):** MLE konvensional sering gagal pada data tak berlabel karena dia butuh "kepastian" untuk menghitung parameter.
-**Solusi EM:**
-- **E-Step (Expectation):** Tebak dulu, siapa milik siapa berdasarkan probabilitas.
-- **M-Step (Maximization):** Perbarui model (rata-rata dan varians) berdasarkan tebakan probabilitas tadi.
-- **Hasil:** Pengelompokan yang jauh lebih halus (soft clustering) dan akurat untuk data yang bentuknya tidak bulat sempurna atau saling menumpuk.
+**Masalah MLE (Maximum Likelihood).** MLE konvensional sering gagal pada data tak berlabel karena dia butuh "kepastian" untuk menghitung parameter.
 
-**💻 Implementasi GMM dengan Python:**
+Secara statistik, kita ingin mencari parameter $\theta$ (mean $\mu$ dan varians $\sigma$) yang memberikan **Likelihood** tertinggi terhadap data kita:
+$$L(\theta) = P(X | \theta)$$
+
+**Alur Kerja EM:**
+1.  **E-Step (Expectation):** 
+    *   *Logic:* "Berdasarkan posisi model sekarang, seberapa besar **probabilitas** titik ini milik klaster A dibanding B?"
+    *   *Result:* Menghasilkan nilai **Responsibility** (bobot kepercayaan).
+    > Tebak dulu, siapa milik siapa berdasarkan probabilitas.
+2.  **M-Step (Maximization):**
+    *   *Logic:* "Update Mean dan Varians kita agar distribusi kita semakin 'pas' menyelimuti data berdasarkan bobot dari E-Step."
+    *   *Result:* Parameter model bergeser untuk memaksimalkan *Likelihood*.
+    > Perbarui model (rata-rata dan varians) berdasarkan tebakan probabilitas tadi.
+3.  **Hasil:** Pengelompokan yang jauh lebih halus (soft clustering) dan akurat untuk data yang bentuknya tidak bulat sempurna atau saling menumpuk.
+
+
+**💻 Implementasi GMM dengan Python**
 
 ```python
 from sklearn.mixture import GaussianMixture
@@ -138,9 +185,18 @@ plt.title('Soft Clustering menggunakan Gaussian Mixture Model (EM)')
 plt.show()
 ```
 
+> GMM bisa "melar" mengikuti bentuk data (lonjong), sedangkan K-Means akan selalu memaksanya menjadi bulat sempurna.
+
 ---
 
-## 5. 🏗️ Jembatan Menuju Masa Depan
+## 6. 💀 The Curse of Dimensionality & PCA 
+Di ruang dimensi tinggi (misal >100 fitur), jarak antar semua titik menjadi hampir seragam. Akibatnya, clustering kehilangan maknanya karena semua data terasa berjarak sama jauhnya.
+
+**Solusinya**: Gunakan Principal Component Analysis (PCA) untuk mereduksi dimensi sebelum masuk ke tahap clustering. PCA akan mencari sumbu-sumbu yang memiliki varians terbesar dan membuang informasi yang tidak penting (noise).
+
+---
+
+## 7. 🏗️ Jembatan Menuju Masa Depan
 
 Unsupervised Learning bukan hanya dipakai sendirian untuk pengelompokan. Seringkali, ini adalah langkah awal yang sangat krusial sebelum kita melakukan Supervised Learning (biasa disebut **Semi-Supervised Learning** atau data preprocessing).
 
@@ -151,7 +207,7 @@ Unsupervised Learning bukan hanya dipakai sendirian untuk pengelompokan. Seringk
 
 ---
 
-## 6. 🚀 Studi Kasus (Anomaly Detection)
+## 8. 🚀 Studi Kasus (Anomaly Detection)
 
 Bayangkan kita memasang sensor akselerometer (Mpu6050) pada ESP32-CAM kalian untuk merekam getaran motor selama balapan.
 
@@ -196,4 +252,4 @@ plt.show()
 
 ---
 
-> *"AI tidak butuh didikte untuk menjadi pintar. Dengan Unsupervised Learning, kalian memberikan mesin kemampuan untuk menemukan rahasia yang bahkan tidak terlihat oleh mata manusia."* 🌌
+> *"AI tidak butuh didikte untuk menjadi pintar. Dengan Unsupervised Learning, kita memberikan mesin kemampuan untuk menemukan rahasia yang bahkan tidak terlihat oleh mata manusia."* 🌌
