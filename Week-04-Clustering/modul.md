@@ -7,9 +7,11 @@
 
 ## 1. 🎭 Sang Guru vs Sang Arkeolog (Konsep Dasar)
 
+Pernahkah kalian memikirkan apa esensi dari "kecerdasan" (*intelligence*)? Pada dasarnya, kepintaran sejati adalah **kemampuan untuk mengategorikan sesuatu**. Kepintaran manusia (dan juga mesin) sesungguhnya lahir dari kemampuannya untuk memetakan, menghubungkan, dan mengelompokkan berbagai objek acak sehingga membentuk sebuah pemahaman atau *insight* yang utuh. Kemampuan melihat pola di tengah kekacauan inilah pondasi dasar dari sebuah kecerdasan.
+
 Sebelumnya, kita belajar **Supervised Learning** (pembelajaran terawasi). Bayangkan itu seperti belajar dengan Guru: Ada soal, ada kunci jawaban. AI hanya bertugas mencocokkan pola agar hasilnya sama dengan kunci jawaban.
 
-Namun, bagaimana jika **tidak ada kunci jawaban**? Inilah **Unsupervised Learning**.
+Namun, bagaimana jika **tidak ada kunci jawaban**? Di sinilah insting murni untuk "mengategorikan" tadi diuji. Inilah **Unsupervised Learning**.
 
 - **Supervised Learning (Sang Murid):** "Guru bilang ini foto kucing, maka saya cari ciri-ciri kucing berdasarkan contoh yang sudah dilabeli 'kucing'."
 - **Unsupervised Learning (Sang Arkeolog):** "Saya punya seribu artefak kuno. Saya tidak tahu namanya, tapi yang ini bentuknya kotak, yang itu bulat. Saya akan kelompokkan mereka berdasarkan kemiripannya."
