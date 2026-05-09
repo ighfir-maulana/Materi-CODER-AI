@@ -92,29 +92,79 @@ K-Means adalah algoritma *clustering* paling populer karena kesederhanaannya dan
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.cluster import KMeans
 from sklearn.datasets import make_blobs
 
 # 1. Membuat data buatan (3 kelompok)
 X, y = make_blobs(n_samples=300, centers=3, cluster_std=0.60, random_state=0)
 
-# 2. Inisialisasi dan melatih K-Means
-kmeans = KMeans(n_clusters=3, random_state=42, n_init=10)
-kmeans.fit(X)
+def euclidean_distance(x1, x2):
+    return np.sqrt(np.sum((x1 - x2) ** 2))
 
-# 3. Memprediksi kelompok untuk setiap data
-y_kmeans = kmeans.predict(X)
+class KMeansManual:
+    def __init__(self, k=3, max_iters=100):
+        self.k = k
+        self.max_iters = max_iters
 
-# 4. Visualisasi hasil
-plt.figure(figsize=(8, 5))
-plt.scatter(X[:, 0], X[:, 1], c=y_kmeans, s=50, cmap='viridis')
+    def fit_predict(self, X):
+        n_samples, n_features = X.shape
+        
+        # 1. Inisialisasi: Pilih k titik acak sebagai centroid awal
+        random_idxs = np.random.choice(n_samples, self.k, replace=False)
+        self.centroids = X[random_idxs]
 
-# Menampilkan Centroid
-centers = kmeans.cluster_centers_
-plt.scatter(centers[:, 0], centers[:, 1], c='red', s=200, alpha=0.75, marker='X', label='Centroid')
+        for _ in range(self.max_iters):
+            # 2. Assignment: Hitung jarak & kelompokkan ke centroid terdekat
+            self.clusters = [[] for _ in range(self.k)]
+            for idx, x in enumerate(X):
+                distances = [euclidean_distance(x, centroid) for centroid in self.centroids]
+                closest_k = np.argmin(distances)
+                self.clusters[closest_k].append(idx)
 
-plt.title('Clustering menggunakan K-Means')
-plt.legend()
+            centroids_old = self.centroids.copy()
+
+            # 3. Update: Hitung rata-rata tiap kelompok untuk centroid baru
+            for cluster_idx, cluster in enumerate(self.clusters):
+                if len(cluster) > 0:
+                    self.centroids[cluster_idx] = np.mean(X[cluster], axis=0)
+
+            # 4. Cek Konvergensi: Berhenti jika centroid tidak bergeser lagi
+            if np.sum(np.abs(self.centroids - centroids_old)) == 0:
+                break
+                
+        # Format output prediksi
+        y_pred = np.zeros(n_samples)
+        for cluster_idx, cluster in enumerate(self.clusters):
+            for sample_idx in cluster:
+                y_pred[sample_idx] = cluster_idx
+        return y_pred
+
+kmeans_manual = KMeansManual(k=3)
+y_manual = kmeans_manual.fit_predict(X)
+
+
+
+from sklearn.cluster import KMeans
+
+# Inisialisasi dan melatih K-Means bawaan sklearn
+kmeans_sklearn = KMeans(n_clusters=3, random_state=42, n_init=10)
+y_sklearn = kmeans_sklearn.fit_predict(X)
+centers_sklearn = kmeans_sklearn.cluster_centers_
+
+
+# PERBANDINGAN
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
+
+# Plot K-Means Manual
+ax1.scatter(X[:, 0], X[:, 1], c=y_manual, s=50, cmap='viridis')
+ax1.scatter(kmeans_manual.centroids[:, 0], kmeans_manual.centroids[:, 1], c='red', s=200, alpha=0.75, marker='X')
+ax1.set_title('K-Means Manual')
+
+# Plot K-Means Scikit-Learn
+ax2.scatter(X[:, 0], X[:, 1], c=y_sklearn, s=50, cmap='viridis')
+ax2.scatter(centers_sklearn[:, 0], centers_sklearn[:, 1], c='red', s=200, alpha=0.75, marker='X')
+ax2.set_title('K-Means Scikit-Learn')
+
+plt.tight_layout()
 plt.show()
 ```
 
@@ -162,26 +212,89 @@ $$L(\theta) = P(X | \theta)$$
 **💻 Implementasi GMM dengan Python**
 
 ```python
+from scipy.stats import multivariate_normal
+
+class GMM_Manual:
+    def __init__(self, k=3, max_iters=100, tol=1e-4):
+        self.k = k
+        self.max_iters = max_iters
+        self.tol = tol
+        
+    def fit_predict(self, X):
+        n_samples, n_features = X.shape
+        
+        # Inisialisasi parameter: Pi (bobot), Mu (rata-rata), Sigma (kovarians)
+        self.pi = np.ones(self.k) / self.k
+        random_idxs = np.random.choice(n_samples, self.k, replace=False)
+        self.mu = X[random_idxs]
+        self.sigma = [np.cov(X.T) for _ in range(self.k)]
+        
+        log_likelihoods = []
+        
+        for _ in range(self.max_iters):
+            # --- E-Step: Hitung Responsibility ---
+            # Seberapa mungkin suatu data masuk ke klaster tertentu
+            responsibilities = np.zeros((n_samples, self.k))
+            for j in range(self.k):
+                rv = multivariate_normal(self.mu[j], self.sigma[j], allow_singular=True)
+                responsibilities[:, j] = self.pi[j] * rv.pdf(X)
+            
+            # Normalisasi
+            responsibilities /= responsibilities.sum(axis=1)[:, np.newaxis]
+            
+            # --- M-Step: Update Parameter ---
+            N_k = responsibilities.sum(axis=0)
+            
+            for j in range(self.k):
+                # Update Mu
+                self.mu[j] = (1 / N_k[j]) * np.sum(responsibilities[:, j][:, np.newaxis] * X, axis=0)
+                # Update Sigma
+                diff = X - self.mu[j]
+                self.sigma[j] = (1 / N_k[j]) * np.dot((responsibilities[:, j][:, np.newaxis] * diff).T, diff)
+                # Update Pi
+                self.pi[j] = N_k[j] / n_samples
+                
+            # Hitung Log-Likelihood untuk cek konvergensi
+            log_likelihood = 0
+            for j in range(self.k):
+                rv = multivariate_normal(self.mu[j], self.sigma[j], allow_singular=True)
+                log_likelihood += self.pi[j] * rv.pdf(X)
+            log_likelihoods.append(np.sum(np.log(log_likelihood)))
+            
+            if len(log_likelihoods) > 1 and np.abs(log_likelihoods[-1] - log_likelihoods[-2]) < self.tol:
+                break
+                
+        return np.argmax(responsibilities, axis=1)
+
+# Asumsikan variabel X sudah ada dari data make_blobs di bagian K-Means
+gmm_manual = GMM_Manual(k=3)
+y_gmm_manual = gmm_manual.fit_predict(X)
+
+
 from sklearn.mixture import GaussianMixture
 
-# Menggunakan data X yang sama seperti di atas
-# 1. Inisialisasi GMM
-gmm = GaussianMixture(n_components=3, random_state=42)
-gmm.fit(X)
+# Inisialisasi dan melatih GMM bawaan sklearn
+gmm_sklearn = GaussianMixture(n_components=3, random_state=42)
+gmm_sklearn.fit(X)
+y_gmm_sklearn = gmm_sklearn.predict(X)
 
-# 2. Memprediksi kelompok (Hard assignment)
-labels = gmm.predict(X)
-
-# 3. Melihat probabilitas (Soft assignment)
-# Menampilkan probabilitas 5 data pertama masuk ke masing-masing cluster
-probs = gmm.predict_proba(X)
-print("Probabilitas 5 data pertama:")
+# Melihat probabilitas (Soft assignment)
+probs = gmm_sklearn.predict_proba(X)
+print("Probabilitas 5 data pertama (Scikit-Learn):")
 print(np.round(probs[:5], 3))
 
-# 4. Visualisasi hasil GMM
-plt.figure(figsize=(8, 5))
-plt.scatter(X[:, 0], X[:, 1], c=labels, s=50, cmap='plasma')
-plt.title('Soft Clustering menggunakan Gaussian Mixture Model (EM)')
+# PERBANDINGAN GMM
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
+
+# Plot GMM Manual
+ax1.scatter(X[:, 0], X[:, 1], c=y_gmm_manual, s=50, cmap='plasma')
+ax1.set_title('GMM/EM Manual')
+
+# Plot GMM Scikit-Learn
+ax2.scatter(X[:, 0], X[:, 1], c=y_gmm_sklearn, s=50, cmap='plasma')
+ax2.set_title('GMM/EM Scikit-Learn')
+
+plt.tight_layout()
 plt.show()
 ```
 
@@ -189,7 +302,7 @@ plt.show()
 
 ---
 
-## 6. 💀 The Curse of Dimensionality & PCA 
+## 6. 💀 Masalah Dimensionality & PCA 
 Di ruang dimensi tinggi (misal >100 fitur), jarak antar semua titik menjadi hampir seragam. Akibatnya, clustering kehilangan maknanya karena semua data terasa berjarak sama jauhnya.
 
 **Solusinya**: Gunakan Principal Component Analysis (PCA) untuk mereduksi dimensi sebelum masuk ke tahap clustering. PCA akan mencari sumbu-sumbu yang memiliki varians terbesar dan membuang informasi yang tidak penting (noise).
