@@ -67,17 +67,7 @@ Tanpa teknik ini, model *clustering* kita akan "buta" terhadap fitur dengan skal
 
 ## 5. ⚙️ Simulasi Algoritma, Dari Kaku ke Bijak
 
-Di dunia *Machine Learning*, sebenarnya ada banyak sekali "jalan" atau pendekatan algoritma untuk melakukan *clustering*. Secara garis besar, terlepas dari metodenya, tujuan utamanya selalu sama: **mengukur jarak atau kedekatan** antar data untuk memisahkan mereka menjadi "pulau-pulau" atau kelompok yang punya karakteristik serupa.
-
-Ada algoritma yang bekerja dengan mengukur jarak fisik antar titik data, ada yang mengelompokkan data berdasarkan seberapa padat mereka menumpuk di satu area (*density-based*), dan ada pula yang membangun silsilah hierarki pengelompokan dari yang terkecil hingga terbesar.
-
-Namun dari sekian banyak metode tersebut, **K-Means** selalu menjadi "pintu gerbang utama" yang wajib dipelajari dan merupakan metode *clustering* yang **paling sering dipakai di industri**. Kenapa?
-
-1. **Sangat Cepat & Skalabel:** K-Means mengandalkan perhitungan jarak sederhana. Ia bisa memproses jutaan baris data jauh lebih cepat dibandingkan metode lain yang membutuhkan peta komputasi kompleks.
-2. **Sederhana & Intuitif:** Konsepnya sangat logis. Ia hanya mencari titik pusat (*centroid*) dari sebuah kerumunan dan menarik data terdekat ke arahnya. Ini membuatnya sangat mudah dijelaskan kepada tim bisnis atau klien.
-3. **Sangat Praktis untuk Kebutuhan Bisnis:** Dalam dunia nyata (misalnya: segmentasi pelanggan, menentukan zonasi logistik, atau membagi paket layanan berlangganan), perusahaan biasanya **sudah tahu atau memiliki target** berapa kelompok yang mereka inginkan. Karena di K-Means kita yang menentukan jumlah klaster ("K") sejak awal, algoritma ini menjadi solusi yang *to the point*.
-
-Mari kita berkenalan langsung dengan sang primadona *clustering* ini!
+LINK github: https://enki1030.github.io/SIMULASI_CLustering/
 
 ### A. K-Means: "Permainan Mencari Teman"
 
