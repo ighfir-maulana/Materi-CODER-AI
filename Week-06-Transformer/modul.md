@@ -86,6 +86,7 @@ Bagaimana arsitektur dari 2017 ini bisa menjadi ChatGPT yang kita kenal sekarang
 Arsitektur Transformer asli memiliki dua bagian: **Encoder** (untuk memahami teks masukan) dan **Decoder** (untuk menghasilkan teks keluaran). 
 
 Model seperti **ChatGPT (Generative Pre-trained Transformer)** pada dasarnya "membuang" bagian Encoder dan hanya menggunakan **Decoder**. Model ini dilatih dengan satu tugas yang luar biasa sederhana: **Memprediksi Kata Selanjutnya (Next-Token Prediction)** dari milyaran halaman web di internet.
+![NextTokenPrediction](./assets/7.jpeg)
 
 Secara ajaib, ketika model disuruh memprediksi kata selanjutnya secara terus-menerus pada data skala masif dengan arsitektur Transformer, model tersebut mulai "memahami" tata bahasa, logika, fakta dunia, hingga kemampuan pemrograman. Gabungan antara prediksi sederhana dan mekanisme *Attention* yang memahami konteks inilah yang melahirkan kecerdasan buatan sintetik masa kini.
 
