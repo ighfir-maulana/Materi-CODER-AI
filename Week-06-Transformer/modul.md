@@ -18,6 +18,7 @@ Cara kerja RNN ini dibuat sangat mirip dengan cara manusia membaca: berurutan da
 ![RNN](.\assets\1.jpg)
 Kedengarannya sangat masuk akal dan natural, bukan? Namun, pada praktiknya metode ini ternyata memendam kelemahan yang sangat fatal: **The Bottleneck (Leher Botol)**. 
 
+![Bottleneck](./assets/2.png)
 Coba bayangkan Anda disuruh membaca buku teks sejarah setebal 1000 halaman secara berurutan. Saat Anda akhirnya sampai di halaman 1000, Anda kemungkinan besar sudah lupa dengan detail nama tokoh atau tempat yang ada di halaman pertama. Inilah persisnya yang dialami oleh model RNN! Semakin panjang kalimat atau dokumen yang diproses, konteks yang berada di awal teks akan semakin memudar dan akhirnya terlupakan oleh mesin.
 
 Secara matematis, fenomena ini disebut sebagai **Masalah Vanishing Gradient**. Di minggu lalu, Anda sudah melihat bagaimana arsitektur ResNet menyelesaikan masalah "hilangnya sinyal" ini pada pemrosesan gambar (CNN) menggunakan jalur pintas (*skip connections*). Namun, untuk data teks yang *berurutan*, informasinya harus mengantre sangat panjang. Sinyal asli dari awal kalimat perlahan "menguap" karena harus melewati ratusan kali perkalian matematis sebelum sampai di akhir. 
@@ -32,6 +33,16 @@ Jawaban dari kebuntuan di atas ternyata datang dari ilmu sains kognitif (*cognit
 
 Di dalam otak kita, terdapat mekanisme pemrosesan informasi yang disebut *Visual/Cognitive Attention*. Otak kita tidak pernah memproses semua informasi yang masuk secara merata (karena itu akan membuat otak *overload*). Sebaliknya, otak kita secara otomatis melakukan *Selective Focus* atau fokus selektif. Inilah yang secara langsung menginspirasi para ilmuwan AI untuk menciptakan mekanisme **"Attention" (Perhatian)** pada jaringan saraf tiruan.
 
+Contoh attention
+Contoh 1:
+Game Find the difference
+![Game1](./assets/3.jpg)
+
+Contoh 2:
+Game Find the Object
+![Game2](./assets/4.jpg)
+
+![Game3](./assets/5.jpeg)
 Coba bayangkan: Saat Anda melihat sebuah foto pasar yang ramai untuk mencari teman Anda, apakah Anda menganalisis setiap piksel dari ujung kiri ke kanan secara merata? Tentu tidak! Anda langsung memberikan **fokus (attention)** pada wajah-wajah orang dan mengabaikan langit atau jalanan. Sama halnya saat menerjemahkan kalimat kompleks, kita memberikan "bobot" lebih pada kata kunci tertentu.
 
 Dalam dunia AI, *Attention Mechanism* adalah sebuah terobosan matematis yang memungkinkan mesin meniru cara otak manusia beroperasi ini. AI tidak lagi dipaksa mengingat seluruh teks secara membabi buta ke dalam satu ruang memori sempit (seperti RNN), melainkan dibekali kemampuan untuk secara dinamis bertanya: *"Saat saya membaca kata saat ini, kata-kata mana saja di masa lalu yang paling relevan dan penting untuk saya beri perhatian lebih?"*
