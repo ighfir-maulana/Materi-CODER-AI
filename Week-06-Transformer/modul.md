@@ -15,7 +15,7 @@ Mari kita memutar waktu sejenak. Dulu, untuk membuat AI yang bisa memahami teks,
 
 Cara kerja RNN ini dibuat sangat mirip dengan cara manusia membaca: berurutan dari kiri ke kanan, kata per kata. AI akan membaca kata pertama, memprosesnya, menyimpan informasinya, lalu lanjut membaca kata kedua, dan seterusnya secara berurutan.
 
-![RNN](Week-06-Transformer\assets\1.jpg)
+![RNN](.\assets\1.jpg)
 Kedengarannya sangat masuk akal dan natural, bukan? Namun, pada praktiknya metode ini ternyata memendam kelemahan yang sangat fatal: **The Bottleneck (Leher Botol)**. 
 
 Coba bayangkan Anda disuruh membaca buku teks sejarah setebal 1000 halaman secara berurutan. Saat Anda akhirnya sampai di halaman 1000, Anda kemungkinan besar sudah lupa dengan detail nama tokoh atau tempat yang ada di halaman pertama. Inilah persisnya yang dialami oleh model RNN! Semakin panjang kalimat atau dokumen yang diproses, konteks yang berada di awal teks akan semakin memudar dan akhirnya terlupakan oleh mesin.
