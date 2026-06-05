@@ -67,11 +67,9 @@ Tanpa teknik ini, model *clustering* kita akan "buta" terhadap fitur dengan skal
 
 ## 5. ⚙️ Simulasi Algoritma, Dari Kaku ke Bijak
 
-<<<<<<< HEAD
-Link Simulasi Clustering:https://enki1030.github.io/SIMULASI_CLustering/
-=======
+
 LINK github: https://enki1030.github.io/SIMULASI_CLustering/
->>>>>>> e67fd80c88e84cbd58108683072f99006cb9c7fa
+
 
 ### A. K-Means: "Permainan Mencari Teman"
 
